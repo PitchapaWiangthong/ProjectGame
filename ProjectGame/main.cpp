@@ -42,22 +42,22 @@ int main()
 			window.close();
 		}
 		player.setTextureRect(sf::IntRect(shipX * 0, shipY * 0, shipX, shipY));
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) and player.getPosition().x<875)
 		{
 			player.move(.1f, 0.f);
 			player.setTextureRect(sf::IntRect(shipX * 0 , shipY * 0, shipX, shipY));
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) and player.getPosition().x>0)
 		{
 			player.move(-.1f, 0.f);
 			player.setTextureRect(sf::IntRect(shipX * 0 , shipY * 0, shipX, shipY));
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) and player.getPosition().y>-45)
 		{
 			player.move(0.f, -.1f);
 			player.setTextureRect(sf::IntRect(shipX *1 , shipY *1 , shipX, shipY));
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) and player.getPosition().y<670)
 		{
 			player.move(0.f, .1f);
 			player.setTextureRect(sf::IntRect(shipX *1 , shipY *0, shipX, shipY));
