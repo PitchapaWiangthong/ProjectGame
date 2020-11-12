@@ -23,6 +23,6 @@ private:
 	sf::Texture Texture_shipplayer;
 	sf::Vector2f shipposition;
 
-	float speed = 400;
+	float speed = 200;
 	sf::Vector2f movement;
 };

@@ -14,19 +14,7 @@ Enemy::~Enemy() { }
 
 void Enemy::Update(float deltatime)
 {
-
-	Sprite_enemy.setTextureRect(sf::IntRect(enemyposition.x * 0, enemyposition.y * offsetanimation, enemyposition.x, enemyposition.y));
-	offset += deltatime;
-	if (offset >= 0.1)
-	{
-		offset -= 0.1;
-		offsetanimation++;
-	}
-
-	if (offsetanimation >= 2)
-	{
-		offsetanimation = 0;
-	}
+	Sprite_enemy.setTextureRect(sf::IntRect(enemyposition.x * 0, enemyposition.y * 1, enemyposition.x, enemyposition.y));
 }
 
 void Enemy::Draw(sf::RenderWindow& window)
@@ -36,9 +24,5 @@ void Enemy::Draw(sf::RenderWindow& window)
 
 void Enemy::move(float deltatime)
 {
-	movement.x = dx * speed * deltatime;
-	movement.y = dy * speed * deltatime;
-	Sprite_enemy.move(movement);
-	dx = 0;
-	dy = 0;
+
 }

@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "Animation.h"
 
 
 using namespace std;
@@ -24,6 +25,7 @@ int main()
 	float firerate = 0;
 	int enemySpawnTimer = 0;
 	int CountBulletEnemymini = 0;
+	int score = 0;
 	srand(time(NULL));
 
 	//background
@@ -78,6 +80,19 @@ int main()
 	enemySmallOrange.loadFromFile("enemy/mini1.png");
 	Enemy Enemymini1(&enemySmallOrange);
 	vector<Enemy> enemies;
+
+	//enemies animation
+	Animation animation(&enemySmallOrange, sf::Vector2u(1, 3), 0.3f);
+
+	//score
+	sf::Font font;
+	font.loadFromFile("font/fontscore.ttf");
+	sf::Text textscore;
+	textscore.setFont(font);
+	textscore.setString("SCORE : ");
+	textscore.setFillColor(sf::Color::Black);
+	textscore.setPosition(40, 0);
+	textscore.setCharacterSize(40);
 
 
 	sf::Clock clock;
@@ -141,15 +156,16 @@ int main()
 
 		for (int i = 0; i < enemies.size(); i++)
 		{
-			enemies[i].Sprite_enemy.move(deltatime * -100 , 0);
+			enemies[i].Sprite_enemy.move(deltatime * -200 ,cos(i));
 
 			if (enemies[i].Sprite_enemy.getPosition().x  < -130)
 			{
 				enemies.erase(enemies.begin() + i);
-			}
+			}	
+			
 		}
 
-
+	
 		//collistion
 		for (size_t i = 0; i < bullets.size(); i++)
 		{
@@ -159,14 +175,23 @@ int main()
 				{
 					bullets.erase(bullets.begin() + i);
 					enemies.erase(enemies.begin() + j);
+					score += 10;
+					//UI
+					textscore.setString("SCORE : " + to_string(score));
 					break;
 				}
-			}
+			}	
+
 		}
 
+		//enemy update
 		Enemymini1.Update(deltatime);
 		for (Background& background : backgrounds)
 			background.Update(deltatime);
+
+		//animation update
+		animation.Update(1,deltatime);
+		/*Enemymini1.Sprite_enemy.setTextureRect(animation.uvRect);*/
 
 		//draw
 		window.clear();
@@ -195,6 +220,10 @@ int main()
 
 		//draw player
 		player.Draw(window);
+
+		//draw text
+		window.draw(textscore);
+		
 
 		window.display();
 
