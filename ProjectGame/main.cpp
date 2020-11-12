@@ -101,11 +101,12 @@ int main()
 
 
 		//Spacebar KeyPressed 
-		if (firerate < 30) { firerate++; }
-		if (firerate >= 30)
+		if (firerate < 20) { firerate++; }
+		if (firerate >= 20)
 		{
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
+
 				Bulletblue.Sprite_bullet.setPosition
 				(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
 					player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
@@ -120,7 +121,7 @@ int main()
 		//bullets movement
 		for (int i = 0; i < bullets.size(); i++)
 		{
-			bullets[i].Sprite_bullet.move(deltatime * 2550, 0);
+			bullets[i].Sprite_bullet.move(deltatime * 500, 0);
 
 			if (bullets[i].Sprite_bullet.getPosition().x > window.getSize().x)
 			{
@@ -129,8 +130,8 @@ int main()
 		}
 
 		//enemies movement
-		if (enemySpawnTimer < 30) { enemySpawnTimer++; }
-		if (enemySpawnTimer >= 30)
+		if (enemySpawnTimer < 50) { enemySpawnTimer++; }
+		if (enemySpawnTimer >= 50)
 		{
 			Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
 			enemies.push_back(Enemy(Enemymini1));
@@ -142,7 +143,7 @@ int main()
 		{
 			enemies[i].Sprite_enemy.move(deltatime * -100 , 0);
 
-			if (enemies[i].Sprite_enemy.getPosition().x < 100)
+			if (enemies[i].Sprite_enemy.getPosition().x  < -130)
 			{
 				enemies.erase(enemies.begin() + i);
 			}
@@ -194,8 +195,6 @@ int main()
 
 		//draw player
 		player.Draw(window);
-
-
 
 		window.display();
 
