@@ -5,6 +5,7 @@ class Player
 {
 public:
 	sf::Sprite Sprite_ship;
+
 	Player(sf::Vector2f position);
 	~Player();
 
