@@ -113,119 +113,116 @@ int main()
 				break;
 			}
 		}
-
-
-		//Spacebar KeyPressed 
-		if (firerate < 20) { firerate++; }
-		if (firerate >= 20)
-		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-			{
-
-				Bulletblue.Sprite_bullet.setPosition
-				(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
-					player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
-				soundbullet.play();
-				bullets.push_back(Bullet(Bulletblue));
-
-			}
-			firerate = 0;
-		}
-
-
-		//bullets movement
-		for (int i = 0; i < bullets.size(); i++)
-		{
-			bullets[i].Sprite_bullet.move(deltatime * 500, 0);
-
-			if (bullets[i].Sprite_bullet.getPosition().x > window.getSize().x)
-			{
-				bullets.erase(bullets.begin() + i);
-			}
-		}
-
-		//enemies movement
-		if (enemySpawnTimer < 50) { enemySpawnTimer++; }
-		if (enemySpawnTimer >= 50)
-		{
-			Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
-			enemies.push_back(Enemy(Enemymini1));
-
-			enemySpawnTimer = 0;
-		}
-
-		for (int i = 0; i < enemies.size(); i++)
-		{
-			enemies[i].Sprite_enemy.move(deltatime * -200 ,cos(i));
-
-			if (enemies[i].Sprite_enemy.getPosition().x  < -130)
-			{
-				enemies.erase(enemies.begin() + i);
-			}	
-			
-		}
-
 	
-		//collistion
-		for (size_t i = 0; i < bullets.size(); i++)
-		{
-			for (size_t j = 0; j < enemies.size(); j++)
+			//Spacebar KeyPressed 
+			if (firerate < 20) { firerate++; }
+			if (firerate >= 20)
 			{
-				if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies[j].Sprite_enemy.getGlobalBounds()))
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{
+
+					Bulletblue.Sprite_bullet.setPosition
+					(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
+						player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
+					soundbullet.play();
+					bullets.push_back(Bullet(Bulletblue));
+
+				}
+				firerate = 0;
+			}
+
+
+			//bullets movement
+			for (int i = 0; i < bullets.size(); i++)
+			{
+				bullets[i].Sprite_bullet.move(deltatime * 500, 0);
+
+				if (bullets[i].Sprite_bullet.getPosition().x > window.getSize().x)
 				{
 					bullets.erase(bullets.begin() + i);
-					enemies.erase(enemies.begin() + j);
-					score += 10;
-					//UI
-					textscore.setString("SCORE : " + to_string(score));
-					break;
 				}
-			}	
+			}
 
-		}
+			//enemies movement
+			if (enemySpawnTimer < 50) { enemySpawnTimer++; }
+			if (enemySpawnTimer >= 50)
+			{
+				Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
+				enemies.push_back(Enemy(Enemymini1));
 
-		//enemy update
-		Enemymini1.Update(deltatime);
-		for (Background& background : backgrounds)
-			background.Update(deltatime);
+				enemySpawnTimer = 0;
+			}
 
-		//animation update
-		animation.Update(1,deltatime);
-		/*Enemymini1.Sprite_enemy.setTextureRect(animation.uvRect);*/
+			for (int i = 0; i < enemies.size(); i++)
+			{
+				enemies[i].Update(deltatime , i);
+				cout << cos(i) << endl;
+				if (enemies[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies.erase(enemies.begin() + i);
+				}
 
-		//draw
-		window.clear();
+			}
 
-		//draw background
-		for (Background& background : backgrounds)
 
-			background.Draw(window);
+			//collistion
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies.size(); j++)
+				{
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies[j].Sprite_enemy.getGlobalBounds()))
+					{
+						bullets.erase(bullets.begin() + i);
+						enemies.erase(enemies.begin() + j);
+						score += 10;
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+				}
 
-		player.Update();
-		player.move(deltatime);
+			}
 
-		
+			//enemy update
+			for (Background& background : backgrounds)
+				background.Update(deltatime);
 
-		//draw bullet
-		for (int i = 0; i < bullets.size(); i++)
-		{
-			bullets[i].Draw(window);
-		}
-		
-		//draw enemy
-		for (int i = 0; i < enemies.size(); i++)
-		{
-			enemies[i].Draw(window);
-		}
+			//animation update
+			animation.Update(1, deltatime);
 
-		//draw player
-		player.Draw(window);
+			//draw
+			window.clear();
 
-		//draw text
-		window.draw(textscore);
-		
+			//draw background
+			for (Background& background : backgrounds)
 
-		window.display();
+				background.Draw(window);
+
+			player.Update();
+			player.move(deltatime);
+
+
+
+			//draw bullet
+			for (int i = 0; i < bullets.size(); i++)
+			{
+				bullets[i].Draw(window);
+			}
+
+			//draw enemy
+			for (int i = 0; i < enemies.size(); i++)
+			{
+				enemies[i].Draw(window);
+			}
+
+			//draw player
+			player.Draw(window);
+
+			//draw text
+			window.draw(textscore);
+			
+
+			window.display();
 
 	}
 	return 0;

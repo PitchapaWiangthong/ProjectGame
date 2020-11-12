@@ -12,9 +12,22 @@ Enemy::Enemy(sf::Texture* texture)
 
 Enemy::~Enemy() { }
 
-void Enemy::Update(float deltatime)
+void Enemy::Update(float deltatime , int i)
 {
-	Sprite_enemy.setTextureRect(sf::IntRect(enemyposition.x * 0, enemyposition.y * 1, enemyposition.x, enemyposition.y));
+	Sprite_enemy.move(deltatime * -200, cos(i));
+	if (cos(i) > 0)
+	{
+		Sprite_enemy.setTextureRect(sf::IntRect(enemyposition.x * 0, enemyposition.y * 0, enemyposition.x, enemyposition.y));
+
+	}
+	if (cos(i) < 0)
+	{
+		Sprite_enemy.setTextureRect(sf::IntRect(enemyposition.x * 0, enemyposition.y * 2, enemyposition.x, enemyposition.y));
+	}
+	else
+	{
+		Sprite_enemy.setTextureRect(sf::IntRect(enemyposition.x * 0, enemyposition.y * 1, enemyposition.x, enemyposition.y));
+	}
 }
 
 void Enemy::Draw(sf::RenderWindow& window)

@@ -10,7 +10,7 @@ public:
 	Enemy(sf::Texture* texture);
 	~Enemy();
 
-	void Update(float deltatime);
+	void Update(float deltatime , int i);
 	void Draw(sf::RenderWindow& window);
 	void move(float deltatime);
 	
