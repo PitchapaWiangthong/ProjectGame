@@ -11,6 +11,7 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "Animation.h"
+#include "Mainmenu.h"
 
 
 using namespace std;
@@ -36,7 +37,8 @@ int main()
 	backgrounds.push_back(Background(&bgTexture[0], -125.f));
 	backgrounds.push_back(Background(&bgTexture[1], -125.f));
 	Player player(sf::Vector2f(0.f, 400.f));
-
+	//main menu
+	Mainmenu mainmenu(600,600);
 	//sound
 		//background
 	sf::Music level1;
@@ -113,7 +115,35 @@ int main()
 				break;
 			}
 		}
-	
+		if (event.type == sf::Event::KeyReleased)
+		{
+			if (event.key.code == sf::Keyboard::Up)
+			{
+				mainmenu.moveUp();
+				break;
+			}
+			if (event.key.code == sf::Keyboard::Down)
+			{
+				mainmenu.moveDown();
+				break;
+			}
+			if (event.key.code == sf::Keyboard::Return)
+			{
+				int x = mainmenu.mainmenuPressed();
+				if (x == 0)
+				{
+					printf("play button was pressed\n");
+				}
+				if (x == 1)
+				{
+					printf("score botton was pressed\n");
+				}
+				if (x == 2)
+				{
+					printf("quit button was pressed\n");
+				}
+			}
+		}
 			//Spacebar KeyPressed 
 			if (firerate < 20) { firerate++; }
 			if (firerate >= 20)
@@ -156,7 +186,7 @@ int main()
 			for (int i = 0; i < enemies.size(); i++)
 			{
 				enemies[i].Update(deltatime , i);
-				cout << cos(i) << endl;
+				/*cout << cos(i) << endl;*/
 				if (enemies[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies.erase(enemies.begin() + i);
@@ -183,7 +213,7 @@ int main()
 
 			}
 
-			//enemy update
+
 			for (Background& background : backgrounds)
 				background.Update(deltatime);
 
@@ -193,6 +223,7 @@ int main()
 			//draw
 			window.clear();
 
+
 			//draw background
 			for (Background& background : backgrounds)
 
@@ -200,7 +231,6 @@ int main()
 
 			player.Update();
 			player.move(deltatime);
-
 
 
 			//draw bullet
@@ -221,6 +251,8 @@ int main()
 			//draw text
 			window.draw(textscore);
 			
+			//draw mainmenu
+			mainmenu.Draw(window);
 
 			window.display();
 
