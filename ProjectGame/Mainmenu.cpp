@@ -38,14 +38,14 @@ void Mainmenu::moveUp()
 {
 	if (mainMenuSelected - 1 >= -1)
 	{
-		mainMenu[mainMenuSelected].setFillColor(sf::Color::Blue);
+		mainMenu[mainMenuSelected].setFillColor(sf::Color::Black);
 
 		mainMenuSelected--;
 		if (mainMenuSelected == -1)
 		{
 			mainMenuSelected = 2;
 		}
-		mainMenu[mainMenuSelected].setFillColor(sf::Color::Black);
+		mainMenu[mainMenuSelected].setFillColor(sf::Color::Blue);
 	}
 }
 
@@ -53,14 +53,14 @@ void Mainmenu::moveDown()
 {
 	if (mainMenuSelected + 1 <= Max_main_menu)
 	{
-		mainMenu[mainMenuSelected].setFillColor(sf::Color::Blue);
+		mainMenu[mainMenuSelected].setFillColor(sf::Color::Black);
 
 		mainMenuSelected++;
 		if (mainMenuSelected == 3)
 		{
 			mainMenuSelected = 0;
 		}
-		mainMenu[mainMenuSelected].setFillColor(sf::Color::Black);
+		mainMenu[mainMenuSelected].setFillColor(sf::Color::Blue);
 	}
 }
 

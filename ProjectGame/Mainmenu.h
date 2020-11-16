@@ -1,5 +1,5 @@
 #pragma once
-#define Max_main_menu 4
+#define Max_main_menu 3
 #include <SFML/Graphics.hpp>
 
 class Mainmenu

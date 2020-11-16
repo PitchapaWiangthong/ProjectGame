@@ -27,6 +27,7 @@ int main()
 	int enemySpawnTimer = 0;
 	int CountBulletEnemymini = 0;
 	int score = 0;
+	int blood = 6;
 	srand(time(NULL));
 
 	//background
@@ -38,7 +39,7 @@ int main()
 	backgrounds.push_back(Background(&bgTexture[1], -125.f));
 	Player player(sf::Vector2f(0.f, 400.f));
 	//main menu
-	Mainmenu mainmenu(600,600);
+	/*Mainmenu mainmenu(600,600);*/
 	//sound
 		//background
 	sf::Music level1;
@@ -86,6 +87,52 @@ int main()
 	//enemies animation
 	Animation animation(&enemySmallOrange, sf::Vector2u(1, 3), 0.3f);
 
+	//heart
+	sf::Texture blood0;
+	blood0.loadFromFile("blood/full.png");
+	sf::Sprite bloodfull;
+	bloodfull.setTexture(blood0);
+	bloodfull.setPosition(60, 670);
+	bloodfull.setScale(0.8, 0.8);
+	sf::Texture blood1;
+	blood1.loadFromFile("blood/1.png");
+	sf::Sprite bloodHalfFirst;
+	bloodHalfFirst.setTexture(blood1);
+	bloodHalfFirst.setPosition(60, 670);
+	bloodHalfFirst.setScale(0.8, 0.8);
+	sf::Texture blood2;
+	blood2.loadFromFile("blood/2.png");
+	sf::Sprite bloodFirst;
+	bloodFirst.setTexture(blood2);
+	bloodFirst.setPosition(60, 670);
+	bloodFirst.setScale(0.8, 0.8);
+	sf::Texture blood3;
+	blood3.loadFromFile("blood/3.png");
+	sf::Sprite bloodHalfnd;
+	bloodHalfnd.setTexture(blood0);
+	bloodHalfnd.setPosition(60, 670);
+	bloodHalfnd.setScale(0.8, 0.8);
+	sf::Texture blood4;
+	blood4.loadFromFile("blood/4.png");
+	sf::Sprite bloodnd;
+	bloodnd.setTexture(blood4);
+	bloodnd.setPosition(60, 670);
+	bloodnd.setScale(0.8, 0.8);
+	sf::Texture blood5;
+	blood5.loadFromFile("blood/5.png");
+	sf::Sprite bloodHalfrd;
+	bloodHalfrd.setTexture(blood5);
+	bloodHalfrd.setPosition(60, 670);
+	bloodHalfrd.setScale(0.8, 0.8);
+	sf::Texture bloodrd;
+	bloodrd.loadFromFile("blood/empty.png");
+	sf::Sprite bloodempty;
+	bloodempty.setTexture(bloodrd);
+	bloodempty.setPosition(60, 670);
+	bloodempty.setScale(0.8, 0.8);
+
+
+
 	//score
 	sf::Font font;
 	font.loadFromFile("font/fontscore.ttf");
@@ -110,40 +157,43 @@ int main()
 		{
 			switch (event.type)
 			{
+				if (event.type == sf::Event::KeyReleased)
+				{
+
+			
+					/*if (event.key.code == sf::Keyboard::Up)
+					{
+						mainmenu.moveUp();
+						break;
+					}
+					if (event.key.code == sf::Keyboard::Down)
+					{
+						mainmenu.moveDown();
+						break;
+					}
+					if (event.key.code == sf::Keyboard::Return)
+					{
+						int x = mainmenu.mainmenuPressed();
+						if (x == 0)
+						{
+							printf("play button was pressed\n");
+						}
+						if (x == 1)
+						{
+							printf("score botton was pressed\n");
+						}
+						if (x == 2)
+						{
+							printf("quit button was pressed\n");
+						}
+					}*/
+				}
 			case sf::Event::Closed:
 				window.close();
 				break;
 			}
 		}
-		if (event.type == sf::Event::KeyReleased)
-		{
-			if (event.key.code == sf::Keyboard::Up)
-			{
-				mainmenu.moveUp();
-				break;
-			}
-			if (event.key.code == sf::Keyboard::Down)
-			{
-				mainmenu.moveDown();
-				break;
-			}
-			if (event.key.code == sf::Keyboard::Return)
-			{
-				int x = mainmenu.mainmenuPressed();
-				if (x == 0)
-				{
-					printf("play button was pressed\n");
-				}
-				if (x == 1)
-				{
-					printf("score botton was pressed\n");
-				}
-				if (x == 2)
-				{
-					printf("quit button was pressed\n");
-				}
-			}
-		}
+
 			//Spacebar KeyPressed 
 			if (firerate < 20) { firerate++; }
 			if (firerate >= 20)
@@ -213,6 +263,17 @@ int main()
 
 			}
 
+			//collistion player vs enemy
+			for (size_t i = 0; i < enemies.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies[i].Sprite_enemy.getGlobalBounds()))
+				{
+					enemies.erase(enemies.begin() + i);
+					blood -= 1;
+				}
+			}
+
+			
 
 			for (Background& background : backgrounds)
 				background.Update(deltatime);
@@ -250,9 +311,26 @@ int main()
 
 			//draw text
 			window.draw(textscore);
+
+			//draw heart
+			if (blood == 6)
+			{ window.draw(bloodfull); }
+			if (blood == 5)
+			{ window.draw(bloodHalfFirst); }
+			if (blood == 4)
+			{ window.draw(bloodFirst); }
+			if (blood == 3)
+			{ window.draw(bloodHalfnd); }
+			if (blood == 2)
+			{ window.draw(bloodnd); }
+			if (blood == 1)
+			{ window.draw(bloodHalfrd); }
+			if (blood == 0)
+			{ window.draw(bloodempty); }
 			
 			//draw mainmenu
-			mainmenu.Draw(window);
+			/*mainmenu.Draw(window);*/
+
 
 			window.display();
 

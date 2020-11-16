@@ -149,6 +149,7 @@
     <ClCompile Include="background.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mainmenu.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="background.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Mainmenu.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
