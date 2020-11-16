@@ -30,9 +30,10 @@ int main()
 	int CountBulletEnemymini = 0;
 	int score = 0;
 	int blood = 6;
-	int bloodenemymedium = 0;
+	int bloodenemymedium = 2;
 	float CountTime = 0;
-	bool mainmenustate = 1;
+	bool mainmenustate = 0;
+	bool GameOverstate = 1;
 	srand(time(NULL));
 
 
@@ -159,6 +160,21 @@ int main()
 	textscore.setPosition(40, 0);
 	textscore.setCharacterSize(40);
 
+	//game over
+	sf::Text GameOverText;
+	GameOverText.setFont(font);
+	GameOverText.setFillColor(sf::Color::Red);
+	GameOverText.setString("GAME OVER");
+	GameOverText.setCharacterSize(80);
+	GameOverText.setPosition(350, 192);
+	//high score
+	sf::Text HighScoreText;
+	HighScoreText.setFont(font);
+	HighScoreText.setFillColor(sf::Color::Black);
+	HighScoreText.setString("HIGH SCORE : ");
+	HighScoreText.setCharacterSize(50);
+	HighScoreText.setPosition(250, 300);
+
 
 	while (window.isOpen())
 	{
@@ -194,6 +210,7 @@ int main()
 			//draw mainmenu
 			mainmenu.Draw(window);
 		}
+		
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -205,7 +222,7 @@ int main()
 					break;
 			}
 		}
-		if (mainmenustate == 0) 
+		if (mainmenustate == 0 ) 
 		{
 			CountTime += deltatime;
 			cout << CountTime << endl;
@@ -243,16 +260,18 @@ int main()
 			if (enemySpawnTimer < 50) { enemySpawnTimer++; }
 			if (enemySpawnTimer >= 50)
 			{
+				if(CountTime > 0 and CountTime <= 60)
+				{
 				Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
 				enemies1.push_back(Enemy(Enemymini1));
-
-				if (CountTime >= 30)
+				}
+				if (CountTime >= 30 and CountTime <= 90)
 				{
 					Enemymini2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini2.Sprite_enemy.getSize().y));
 					enemies2.push_back(Enemy(Enemymini2));
 				}
 
-				if (CountTime >= 60)
+				if (CountTime >= 60 /*and CountTime <= 100*/)
 				{
 					Enemymedium1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium1.Sprite_enemy.getSize().y));
 					enemies3.push_back(Enemy(Enemymedium1));
@@ -337,17 +356,21 @@ int main()
 				{
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].Sprite_enemy.getGlobalBounds()))
 					{
-
 						bullets.erase(bullets.begin() + i);
-						enemies3.erase(enemies3.begin() + j);
-						score += 20;
+						bloodenemymedium--;
+						if(bloodenemymedium == 0) 
+						{
+							score += 20;
+							enemies3.erase(enemies3.begin() + j);
+						}
+						
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
-
+					
 				}
-
+					bloodenemymedium = 2;
 			}
 
 
@@ -379,11 +402,7 @@ int main()
 				}
 			}
 
-			//game over
-			/*if (blood <= -1)
-			{
-				window.clear();
-			}*/
+			
 
 			for (Background& background : backgrounds)
 				background.Update(deltatime);
@@ -463,6 +482,17 @@ int main()
 				window.draw(bloodempty);
 			}
 
+			//game over
+			if (blood <= -1)
+			{
+				GameOverstate = 0;
+			}
+
+			if (GameOverstate == 0)
+			{
+				window.draw(GameOverText);
+				window.draw(HighScoreText);
+			}
 		}
 			window.display();
 		
