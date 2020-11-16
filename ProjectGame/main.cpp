@@ -20,6 +20,8 @@ int main()
 	//window
 	sf::RenderWindow window(sf::VideoMode(1000, 768), "OverWhelm!", sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
+	sf::Clock clock;
+
 
 	//variable
 	float deltatime = 0.0f;
@@ -28,7 +30,10 @@ int main()
 	int CountBulletEnemymini = 0;
 	int score = 0;
 	int blood = 6;
+	int collistion = 0;
+	float CountTime = 0;
 	srand(time(NULL));
+
 
 	//background
 	sf::Texture bgTexture[2];
@@ -82,7 +87,17 @@ int main()
 	sf::Texture enemySmallOrange;
 	enemySmallOrange.loadFromFile("enemy/mini1.png");
 	Enemy Enemymini1(&enemySmallOrange);
-	vector<Enemy> enemies;
+	vector<Enemy> enemies1;
+
+	sf::Texture enemySmallArmy;
+	enemySmallArmy.loadFromFile("enemy/mini2.png");
+	Enemy Enemymini2(&enemySmallArmy);
+	vector<Enemy> enemies2;
+
+	sf::Texture enemyMediumOrange;
+	enemyMediumOrange.loadFromFile("enemy/medium1.png");
+	Enemy Enemymedium1(&enemyMediumOrange);
+	vector<Enemy> enemies3;
 
 	//enemies animation
 	Animation animation(&enemySmallOrange, sf::Vector2u(1, 3), 0.3f);
@@ -109,7 +124,7 @@ int main()
 	sf::Texture blood3;
 	blood3.loadFromFile("blood/3.png");
 	sf::Sprite bloodHalfnd;
-	bloodHalfnd.setTexture(blood0);
+	bloodHalfnd.setTexture(blood3);
 	bloodHalfnd.setPosition(60, 670);
 	bloodHalfnd.setScale(0.8, 0.8);
 	sf::Texture blood4;
@@ -143,8 +158,6 @@ int main()
 	textscore.setPosition(40, 0);
 	textscore.setCharacterSize(40);
 
-
-	sf::Clock clock;
 
 	while (window.isOpen())
 	{
@@ -193,6 +206,9 @@ int main()
 				break;
 			}
 		}
+	
+		CountTime += deltatime;
+		cout << CountTime << endl;
 
 			//Spacebar KeyPressed 
 			if (firerate < 20) { firerate++; }
@@ -228,52 +244,155 @@ int main()
 			if (enemySpawnTimer >= 50)
 			{
 				Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
-				enemies.push_back(Enemy(Enemymini1));
+				enemies1.push_back(Enemy(Enemymini1));
+
+				if (CountTime >= 30)
+				{
+					Enemymini2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini2.Sprite_enemy.getSize().y));
+					enemies2.push_back(Enemy(Enemymini2));
+				}
+
+				if (CountTime >= 60)
+				{
+					Enemymedium1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium1.Sprite_enemy.getSize().y));
+					enemies3.push_back(Enemy(Enemymedium1));
+				}
 
 				enemySpawnTimer = 0;
 			}
 
-			for (int i = 0; i < enemies.size(); i++)
+			for (int i = 0; i < enemies1.size(); i++)
 			{
-				enemies[i].Update(deltatime , i);
-				/*cout << cos(i) << endl;*/
-				if (enemies[i].Sprite_enemy.getPosition().x < -130)
+				enemies1[i].Update(deltatime , i);
+				if (enemies1[i].Sprite_enemy.getPosition().x < -130)
 				{
-					enemies.erase(enemies.begin() + i);
+					enemies1.erase(enemies1.begin() + i);
+				}
+		
+			}
+
+			for (int i = 0; i < enemies2.size(); i++)
+			{
+				enemies2[i].Update(deltatime, i);
+				if (enemies2[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies2.erase(enemies2.begin() + i);
 				}
 
 			}
 
+			for (int i = 0; i < enemies3.size(); i++)
+			{
+				enemies3[i].Update(deltatime, i);
+				if (enemies3[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies3.erase(enemies3.begin() + i);
+				}
+
+			}
 
 			//collistion
 			for (size_t i = 0; i < bullets.size(); i++)
 			{
-				for (size_t j = 0; j < enemies.size(); j++)
+				for (size_t j = 0; j < enemies1.size(); j++)
 				{
-					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies[j].Sprite_enemy.getGlobalBounds()))
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].Sprite_enemy.getGlobalBounds()))
 					{
+						collistion += 1;
 						bullets.erase(bullets.begin() + i);
-						enemies.erase(enemies.begin() + j);
+						if (collistion == 1)
+						{
+						enemies1.erase(enemies1.begin() + j);
 						score += 10;
+						}
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
+					collistion = 0;
 				}
 
 			}
 
-			//collistion player vs enemy
-			for (size_t i = 0; i < enemies.size(); i++)
+			for (size_t i = 0; i < bullets.size(); i++)
 			{
-				if (player.Sprite_ship.getGlobalBounds().intersects(enemies[i].Sprite_enemy.getGlobalBounds()))
+				for (size_t j = 0; j < enemies2.size(); j++)
 				{
-					enemies.erase(enemies.begin() + i);
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].Sprite_enemy.getGlobalBounds()))
+					{
+						collistion += 1;
+						bullets.erase(bullets.begin() + i);
+						if (collistion == 1)
+						{
+						enemies2.erase(enemies2.begin() + j);
+						score += 10;
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+					collistion = 0;
+				}
+
+			}
+
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies3.size(); j++)
+				{
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].Sprite_enemy.getGlobalBounds()))
+					{
+						collistion += 1;
+						bullets.erase(bullets.begin() + i);
+						if (collistion == 2)
+						{
+						enemies3.erase(enemies3.begin() + j);
+						score += 20;
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+					collistion = 0;
+				}
+
+			}
+
+
+			//collistion player vs enemy
+			for (size_t i = 0; i < enemies1.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies1[i].Sprite_enemy.getGlobalBounds()))
+				{
+					enemies1.erase(enemies1.begin() + i);
 					blood -= 1;
 				}
 			}
 
+			for (size_t i = 0; i < enemies2.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies2[i].Sprite_enemy.getGlobalBounds()))
+				{
+					enemies2.erase(enemies2.begin() + i);
+					blood -= 1;
+				}
+			}
 			
+			for (size_t i = 0; i < enemies3.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies3[i].Sprite_enemy.getGlobalBounds()))
+				{
+					enemies3.erase(enemies3.begin() + i);
+					blood -= 1;
+				}
+			}
+
+			//game over
+			/*if (blood <= -1)
+			{
+				window.clear();
+			}*/
 
 			for (Background& background : backgrounds)
 				background.Update(deltatime);
@@ -301,10 +420,21 @@ int main()
 			}
 
 			//draw enemy
-			for (int i = 0; i < enemies.size(); i++)
+			for (int i = 0; i < enemies1.size(); i++)
 			{
-				enemies[i].Draw(window);
+				enemies1[i].Draw(window);
 			}
+
+			for (int i = 0; i < enemies2.size(); i++)
+			{
+				enemies2[i].Draw(window);
+			}
+
+			for (int i = 0; i < enemies3.size(); i++)
+			{
+				enemies3[i].Draw(window);
+			}
+
 
 			//draw player
 			player.Draw(window);
