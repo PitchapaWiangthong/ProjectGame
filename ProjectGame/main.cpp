@@ -30,8 +30,9 @@ int main()
 	int CountBulletEnemymini = 0;
 	int score = 0;
 	int blood = 6;
-	int collistion = 0;
+	int bloodenemymedium = 0;
 	float CountTime = 0;
+	bool mainmenustate = 1;
 	srand(time(NULL));
 
 
@@ -44,7 +45,7 @@ int main()
 	backgrounds.push_back(Background(&bgTexture[1], -125.f));
 	Player player(sf::Vector2f(0.f, 400.f));
 	//main menu
-	/*Mainmenu mainmenu(600,600);*/
+	Mainmenu mainmenu(600,600);
 	//sound
 		//background
 	sf::Music level1;
@@ -164,51 +165,50 @@ int main()
 		deltatime = clock.restart().asSeconds();
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			window.close();
+		if (mainmenustate == 1);
+		{
+			//draw background
 
+			for (Background& background : backgrounds)
+				background.Update(deltatime);
+			for (Background& background : backgrounds)
+			{ background.Draw(window); }
+
+			//draw enemy
+
+			for (int i = 0; i < enemies1.size(); i++)
+			{
+				enemies1[i].Draw(window);
+			}
+
+			for (int i = 0; i < enemies2.size(); i++)
+			{
+				enemies2[i].Draw(window);
+			}
+
+			for (int i = 0; i < enemies3.size(); i++)
+			{
+				enemies3[i].Draw(window);
+			}
+
+			//draw mainmenu
+			mainmenu.Draw(window);
+		}
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
 			switch (event.type)
 			{
-				if (event.type == sf::Event::KeyReleased)
-				{
 
-			
-					/*if (event.key.code == sf::Keyboard::Up)
-					{
-						mainmenu.moveUp();
-						break;
-					}
-					if (event.key.code == sf::Keyboard::Down)
-					{
-						mainmenu.moveDown();
-						break;
-					}
-					if (event.key.code == sf::Keyboard::Return)
-					{
-						int x = mainmenu.mainmenuPressed();
-						if (x == 0)
-						{
-							printf("play button was pressed\n");
-						}
-						if (x == 1)
-						{
-							printf("score botton was pressed\n");
-						}
-						if (x == 2)
-						{
-							printf("quit button was pressed\n");
-						}
-					}*/
-				}
-			case sf::Event::Closed:
-				window.close();
-				break;
+				case sf::Event::Closed:
+					window.close();
+					break;
 			}
 		}
-	
-		CountTime += deltatime;
-		cout << CountTime << endl;
+		if (mainmenustate == 0) 
+		{
+			CountTime += deltatime;
+			cout << CountTime << endl;
 
 			//Spacebar KeyPressed 
 			if (firerate < 20) { firerate++; }
@@ -263,12 +263,12 @@ int main()
 
 			for (int i = 0; i < enemies1.size(); i++)
 			{
-				enemies1[i].Update(deltatime , i);
+				enemies1[i].Update(deltatime, i);
 				if (enemies1[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies1.erase(enemies1.begin() + i);
 				}
-		
+
 			}
 
 			for (int i = 0; i < enemies2.size(); i++)
@@ -298,18 +298,15 @@ int main()
 				{
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].Sprite_enemy.getGlobalBounds()))
 					{
-						collistion += 1;
+
 						bullets.erase(bullets.begin() + i);
-						if (collistion == 1)
-						{
 						enemies1.erase(enemies1.begin() + j);
 						score += 10;
-						}
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
-					collistion = 0;
+
 				}
 
 			}
@@ -320,18 +317,15 @@ int main()
 				{
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].Sprite_enemy.getGlobalBounds()))
 					{
-						collistion += 1;
+
 						bullets.erase(bullets.begin() + i);
-						if (collistion == 1)
-						{
 						enemies2.erase(enemies2.begin() + j);
 						score += 10;
-						}
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
-					collistion = 0;
+
 				}
 
 			}
@@ -343,18 +337,15 @@ int main()
 				{
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].Sprite_enemy.getGlobalBounds()))
 					{
-						collistion += 1;
+
 						bullets.erase(bullets.begin() + i);
-						if (collistion == 2)
-						{
 						enemies3.erase(enemies3.begin() + j);
 						score += 20;
-						}
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
-					collistion = 0;
+
 				}
 
 			}
@@ -378,7 +369,7 @@ int main()
 					blood -= 1;
 				}
 			}
-			
+
 			for (size_t i = 0; i < enemies3.size(); i++)
 			{
 				if (player.Sprite_ship.getGlobalBounds().intersects(enemies3[i].Sprite_enemy.getGlobalBounds()))
@@ -444,26 +435,37 @@ int main()
 
 			//draw heart
 			if (blood == 6)
-			{ window.draw(bloodfull); }
+			{
+				window.draw(bloodfull);
+			}
 			if (blood == 5)
-			{ window.draw(bloodHalfFirst); }
+			{
+				window.draw(bloodHalfFirst);
+			}
 			if (blood == 4)
-			{ window.draw(bloodFirst); }
+			{
+				window.draw(bloodFirst);
+			}
 			if (blood == 3)
-			{ window.draw(bloodHalfnd); }
+			{
+				window.draw(bloodHalfnd);
+			}
 			if (blood == 2)
-			{ window.draw(bloodnd); }
+			{
+				window.draw(bloodnd);
+			}
 			if (blood == 1)
-			{ window.draw(bloodHalfrd); }
+			{
+				window.draw(bloodHalfrd);
+			}
 			if (blood == 0)
-			{ window.draw(bloodempty); }
-			
-			//draw mainmenu
-			/*mainmenu.Draw(window);*/
+			{
+				window.draw(bloodempty);
+			}
 
-
+		}
 			window.display();
-
+		
 	}
 	return 0;
 }
