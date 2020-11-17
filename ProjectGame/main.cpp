@@ -32,8 +32,8 @@ int main()
 	int blood = 6;
 	int bloodenemymedium = 2;
 	float CountTime = 0;
-	bool mainmenustate = 0;
-	bool GameOverstate = 1;
+	int mainmenustate = 1;
+	int GameOverstate = 1;
 	srand(time(NULL));
 
 
@@ -148,7 +148,18 @@ int main()
 	bloodempty.setPosition(60, 670);
 	bloodempty.setScale(0.8, 0.8);
 
+	//over whelm
+	sf::Texture over;
+	over.loadFromFile("mainmenu/over.png");
+	sf::Sprite showover;
+	showover.setTexture(over);
+	showover.setPosition(100,-10);
 
+	sf::Texture whelm;
+	whelm.loadFromFile("mainmenu/whelm.png");
+	sf::Sprite showwhelm;
+	showwhelm.setTexture(whelm);
+	showwhelm.setPosition(500, -10);
 
 	//score
 	sf::Font font;
@@ -175,7 +186,6 @@ int main()
 	HighScoreText.setCharacterSize(50);
 	HighScoreText.setPosition(250, 300);
 
-
 	while (window.isOpen())
 	{
 		deltatime = clock.restart().asSeconds();
@@ -190,22 +200,11 @@ int main()
 			for (Background& background : backgrounds)
 			{ background.Draw(window); }
 
-			//draw enemy
-
-			for (int i = 0; i < enemies1.size(); i++)
-			{
-				enemies1[i].Draw(window);
-			}
-
-			for (int i = 0; i < enemies2.size(); i++)
-			{
-				enemies2[i].Draw(window);
-			}
-
-			for (int i = 0; i < enemies3.size(); i++)
-			{
-				enemies3[i].Draw(window);
-			}
+			//draw overwhelm
+			if (showover.getPosition().y < 60) { showover.move(0, 1.0); }
+			if (showwhelm.getPosition().y < 60) { showwhelm.move(0, 1.0); }
+			window.draw(showover);
+			window.draw(showwhelm);
 
 			//draw mainmenu
 			mainmenu.Draw(window);
@@ -354,10 +353,11 @@ int main()
 			{
 				for (size_t j = 0; j < enemies3.size(); j++)
 				{
+					
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].Sprite_enemy.getGlobalBounds()))
 					{
-						bullets.erase(bullets.begin() + i);
 						bloodenemymedium--;
+						bullets.erase(bullets.begin() + i);
 						if(bloodenemymedium == 0) 
 						{
 							score += 20;
@@ -370,7 +370,6 @@ int main()
 					}
 					
 				}
-					bloodenemymedium = 2;
 			}
 
 
