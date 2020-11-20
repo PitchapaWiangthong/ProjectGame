@@ -12,6 +12,7 @@
 #include "Enemy.h"
 #include "Animation.h"
 #include "Mainmenu.h"
+#include "Gameover.h"
 
 
 using namespace std;
@@ -30,10 +31,9 @@ int main()
 	int CountBulletEnemymini = 0;
 	int score = 0;
 	int blood = 6;
-	int bloodenemymedium = 2;
 	float CountTime = 0;
-	int mainmenustate = 1;
-	int GameOverstate = 1;
+	int mainmenustate = 0; //0 = not display , 1,3 = display
+	int GameOverstate = 1; //1 = not display , 0 = display
 	srand(time(NULL));
 
 
@@ -45,14 +45,24 @@ int main()
 	backgrounds.push_back(Background(&bgTexture[0], -125.f));
 	backgrounds.push_back(Background(&bgTexture[1], -125.f));
 	Player player(sf::Vector2f(0.f, 400.f));
+
+
 	//main menu
 	Mainmenu mainmenu(600,600);
+
 	//sound
-		//background
+		//background started
 	sf::Music level1;
 	level1.openFromFile("sound/level1.WAV");
 	level1.setLoop(true);
-	level1.play();
+		
+		//background
+	sf::Music startmusic;
+	startmusic.openFromFile("sound/start.WAV");
+	startmusic.setLoop(true);
+	startmusic.play();
+
+
 
 	//soundeffect player
 	sf::SoundBuffer shootingeffect;
@@ -100,6 +110,7 @@ int main()
 	enemyMediumOrange.loadFromFile("enemy/medium1.png");
 	Enemy Enemymedium1(&enemyMediumOrange);
 	vector<Enemy> enemies3;
+	
 
 	//enemies animation
 	Animation animation(&enemySmallOrange, sf::Vector2u(1, 3), 0.3f);
@@ -171,27 +182,15 @@ int main()
 	textscore.setPosition(40, 0);
 	textscore.setCharacterSize(40);
 
-	//game over
-	sf::Text GameOverText;
-	GameOverText.setFont(font);
-	GameOverText.setFillColor(sf::Color::Red);
-	GameOverText.setString("GAME OVER");
-	GameOverText.setCharacterSize(80);
-	GameOverText.setPosition(350, 192);
-	//high score
-	sf::Text HighScoreText;
-	HighScoreText.setFont(font);
-	HighScoreText.setFillColor(sf::Color::Black);
-	HighScoreText.setString("HIGH SCORE : ");
-	HighScoreText.setCharacterSize(50);
-	HighScoreText.setPosition(250, 300);
+	//gameover
+	Gameover gameover(600, 600);
 
 	while (window.isOpen())
 	{
 		deltatime = clock.restart().asSeconds();
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			window.close();
-		if (mainmenustate == 1);
+		if (mainmenustate == 1 or mainmenustate == 3);
 		{
 			//draw background
 
@@ -225,6 +224,8 @@ int main()
 		{
 			CountTime += deltatime;
 			cout << CountTime << endl;
+			startmusic.stop();
+			level1.play();
 
 			//Spacebar KeyPressed 
 			if (firerate < 20) { firerate++; }
@@ -356,22 +357,22 @@ int main()
 					
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].Sprite_enemy.getGlobalBounds()))
 					{
-						bloodenemymedium--;
+						enemies3[i].bloodenemymedium--;
 						bullets.erase(bullets.begin() + i);
-						if(bloodenemymedium == 0) 
+						if (enemies3[i].bloodenemymedium == 0)
 						{
 							score += 20;
 							enemies3.erase(enemies3.begin() + j);
+	
 						}
-						
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
-					
 				}
+					
 			}
-
+			
 
 			//collistion player vs enemy
 			for (size_t i = 0; i < enemies1.size(); i++)
@@ -489,8 +490,7 @@ int main()
 
 			if (GameOverstate == 0)
 			{
-				window.draw(GameOverText);
-				window.draw(HighScoreText);
+				gameover.Draw(window);
 			}
 		}
 			window.display();

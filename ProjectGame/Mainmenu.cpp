@@ -25,7 +25,7 @@ Mainmenu::Mainmenu(float width, float height)
 	mainMenu[2].setCharacterSize(50);
 	mainMenu[2].setPosition(430, 576);
 
-	mainMenuSelected = 0;
+
 }
 
 void Mainmenu::Draw(sf::RenderWindow& window)
@@ -34,15 +34,6 @@ void Mainmenu::Draw(sf::RenderWindow& window)
 		window.draw(mainMenu[i]);
 }
 
-void Mainmenu::moveUp()
-{
-
-}
-
-void Mainmenu::moveDown()
-{
-	
-}
 
 Mainmenu::~Mainmenu()
 {

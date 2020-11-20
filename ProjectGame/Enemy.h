@@ -14,6 +14,7 @@ public:
 	void Draw(sf::RenderWindow& window);
 	void move(float deltatime);
 	
+	int bloodenemymedium = 2;
 	float dx = 0;
 	float dy = 0;
 	float speed = 200;

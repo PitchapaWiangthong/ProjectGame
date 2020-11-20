@@ -8,6 +8,7 @@ Enemy::Enemy(sf::Texture* texture)
 	enemyposition.y = texture->getSize().y / 3;
 	sf::Vector2f spawnpoint = { 1000.f,256.f };
 	Sprite_enemy.setPosition(spawnpoint);
+
 }
 
 Enemy::~Enemy() { }
@@ -28,6 +29,7 @@ void Enemy::Update(float deltatime , int i)
 	{
 		Sprite_enemy.setTextureRect(sf::IntRect(enemyposition.x * 0, enemyposition.y * 1, enemyposition.x, enemyposition.y));
 	}
+	
 }
 
 void Enemy::Draw(sf::RenderWindow& window)
