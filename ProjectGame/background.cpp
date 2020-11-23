@@ -12,11 +12,11 @@ Background::Background(sf::Texture* texture, float speed)
 
 	if (speed < 0)
 	{
-		body[1].setPosition(size.x -10.0f, 0.0f);
+		body[1].setPosition(size.x , 0.0f);
 	}
 	else
 	{
-		body[1].setPosition(-size.x-10.0f, 0.0f);
+		body[1].setPosition(-size.x , 0.0f);
 	}
 }
 void Background::Update(float deltatime)
@@ -28,9 +28,9 @@ void Background::Update(float deltatime)
 		body[i].move(speed * deltatime, 0);
 
 		if (position.x <= -size.x && speed < 0)
-			body[i].setPosition(size.x - 4.0f, position.y);
+			body[i].setPosition(size.x -8.0f, position.y);
 		else if (position.x >= size.x && speed > 0)
-			body[i].setPosition(-size.x + 4.0f, position.y);
+			body[i].setPosition(-size.x -8.0f, position.y);
 	}
 }
 void Background::Draw(sf::RenderWindow& window)
