@@ -12,11 +12,11 @@ Background::Background(sf::Texture* texture, float speed)
 
 	if (speed < 0)
 	{
-		body[1].setPosition(size.x, 0.0f);
+		body[1].setPosition(size.x -10.0f, 0.0f);
 	}
 	else
 	{
-		body[1].setPosition(-size.x, 0.0f);
+		body[1].setPosition(-size.x-10.0f, 0.0f);
 	}
 }
 void Background::Update(float deltatime)

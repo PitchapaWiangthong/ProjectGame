@@ -32,7 +32,7 @@ int main()
 	int score = 0;
 	int blood = 6;
 	float CountTime = 0;
-	int mainmenustate = 0; //0 = not display , 1,3 = display
+	int mainmenustate = 1; //0 = not display , 1,3 = display
 	int GameOverstate = 1; //1 = not display , 0 = display
 	srand(time(NULL));
 
@@ -50,6 +50,11 @@ int main()
 	//main menu
 	Mainmenu mainmenu(600,600);
 
+	//hitbox mouse
+	sf::RectangleShape mouseHitBox(sf::Vector2f(10.f, 10.f));
+	sf::Mouse::setPosition(sf::Vector2i(), window);
+
+
 	//sound
 		//background started
 	sf::Music level1;
@@ -61,7 +66,6 @@ int main()
 	startmusic.openFromFile("sound/start.WAV");
 	startmusic.setLoop(true);
 	startmusic.play();
-
 
 
 	//soundeffect player
@@ -79,6 +83,7 @@ int main()
 	Bulletblue.Sprite_bullet.setScale(0.8, 0.8);
 	vector<Bullet> bullets;
 
+
 	//bulletItems
 	sf::Texture bulletR;
 	bulletR.loadFromFile("bullet/bulletRed.png");
@@ -94,6 +99,7 @@ int main()
 	bulletY.loadFromFile("bullet/bulletYellow.png");
 	Bullet Bulletyellow(&bulletY);
 	Bulletyellow.Sprite_bullet.setScale(0.8, 0.8);
+
 
 	//enemies
 	sf::Texture enemySmallOrange;
@@ -205,6 +211,62 @@ int main()
 			window.draw(showover);
 			window.draw(showwhelm);
 
+			//hitbox
+			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+			mouseHitBox.setPosition(mousePos.x, mousePos.y);
+			mouseHitBox.setOrigin(5, 5);
+			/*window.draw(mouseHitBox);*/
+			if (mainmenu.hitbox[0].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+					mainmenu.mainMenu[0].setFillColor(sf::Color::Blue);
+					mainmenu.mainMenu[0].setScale(1.5, 1.5);
+				
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+					mainmenustate = 0;
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[0].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[0].setScale(1, 1);
+
+			}
+			if (mainmenu.hitbox[1].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				mainmenu.mainMenu[1].setFillColor(sf::Color::Blue);
+				mainmenu.mainMenu[1].setScale(1.5, 1.5);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+					/*mainmenustate = 0;*/
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[1].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[1].setScale(1, 1);
+			}
+
+			if (mainmenu.hitbox[2].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				mainmenu.mainMenu[2].setFillColor(sf::Color::Blue);
+				mainmenu.mainMenu[2].setScale(1.5, 1.5);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+					/*mainmenustate = 0;*/
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[2].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[2].setScale(1, 1);
+			}
+
 			//draw mainmenu
 			mainmenu.Draw(window);
 		}
@@ -241,7 +303,9 @@ int main()
 					bullets.push_back(Bullet(Bulletblue));
 
 				}
+
 				firerate = 0;
+
 			}
 
 
