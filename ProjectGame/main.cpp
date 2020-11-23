@@ -50,10 +50,6 @@ int main()
 	//main menu
 	Mainmenu mainmenu(600,600);
 
-	//hitbox mouse
-	sf::RectangleShape mouseHitBox(sf::Vector2f(10.f, 10.f));
-	sf::Mouse::setPosition(sf::Vector2i(), window);
-
 
 	//sound
 		//background started
@@ -67,6 +63,7 @@ int main()
 	startmusic.setLoop(true);
 	startmusic.play();
 
+	
 
 	//soundeffect player
 	sf::SoundBuffer shootingeffect;
@@ -212,10 +209,7 @@ int main()
 			window.draw(showwhelm);
 
 			//hitbox
-			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			mouseHitBox.setPosition(mousePos.x, mousePos.y);
-			mouseHitBox.setOrigin(5, 5);
-			/*window.draw(mouseHitBox);*/
+	
 			if (mainmenu.hitbox[0].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
 					mainmenu.mainMenu[0].setFillColor(sf::Color::Blue);
@@ -258,7 +252,7 @@ int main()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 
-					/*mainmenustate = 0;*/
+					window.close();
 				}
 			}
 			else
