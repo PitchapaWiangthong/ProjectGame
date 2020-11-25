@@ -35,7 +35,6 @@ int main()
 	float CountTime = 0;
 	int mainmenustate = 1; //0 = not display , 1,3 = display
 	int GameOverstate = 1; //1 = not display , 0 = display
-	bool playsound = 0;//0 = not play , 1 = play
 	srand(time(NULL));
 
 
@@ -236,11 +235,8 @@ int main()
 
 					mainmenustate = 0;
 					startmusic.stop();
-					playsound = 1;
-					if (playsound == 1)
-					{
 						level1.play();
-					}
+					
 				}
 			}
 			else
