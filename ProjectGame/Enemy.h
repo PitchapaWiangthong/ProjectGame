@@ -17,7 +17,7 @@ public:
 	int bloodenemymedium = 2;
 	float dx = 0;
 	float dy = 0;
-	float speed = 200;
+	float speed = 150;
 private:
 	int offsetanimation = 1;
 	float offset = 0;

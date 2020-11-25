@@ -13,6 +13,7 @@
 #include "Animation.h"
 #include "Mainmenu.h"
 #include "Gameover.h"
+#include "PauseMenu.h"
 
 
 using namespace std;
@@ -34,6 +35,7 @@ int main()
 	float CountTime = 0;
 	int mainmenustate = 1; //0 = not display , 1,3 = display
 	int GameOverstate = 1; //1 = not display , 0 = display
+	bool playsound = 0;//0 = not play , 1 = play
 	srand(time(NULL));
 
 
@@ -50,6 +52,8 @@ int main()
 	//main menu
 	Mainmenu mainmenu(600,600);
 
+	//pause menu
+	PauseMenu pausemenu(sf::Vector2f(900.f, 0.f));
 
 	//sound
 		//background started
@@ -113,7 +117,17 @@ int main()
 	enemyMediumOrange.loadFromFile("enemy/medium1.png");
 	Enemy Enemymedium1(&enemyMediumOrange);
 	vector<Enemy> enemies3;
+
+	sf::Texture enemyMediumPink;
+	enemyMediumPink.loadFromFile("enemy/medium2.png");
+	Enemy Enemymedium2(&enemyMediumPink);
+	vector<Enemy> enemies4;
 	
+	//sf::Texture enemyBig;
+	//enemyBig.loadFromFile("enemy/big1.png");
+	//Enemy Enemybig1(&enemyBig);
+	//vector<Enemy> enemies5;
+
 
 	//enemies animation
 	Animation animation(&enemySmallOrange, sf::Vector2u(1, 3), 0.3f);
@@ -195,7 +209,9 @@ int main()
 			window.close();
 		if (mainmenustate == 1 or mainmenustate == 3);
 		{
-			//draw background
+
+			
+			//draw background menu state
 
 			for (Background& background : backgrounds)
 				background.Update(deltatime);
@@ -219,6 +235,12 @@ int main()
 				{
 
 					mainmenustate = 0;
+					startmusic.stop();
+					playsound = 1;
+					if (playsound == 1)
+					{
+						level1.play();
+					}
 				}
 			}
 			else
@@ -276,12 +298,12 @@ int main()
 					break;
 			}
 		}
-		if (mainmenustate == 0 ) 
+		if (mainmenustate == 0) 
 		{
+			
 			CountTime += deltatime;
-			cout << CountTime << endl;
-			startmusic.stop();
-			level1.play();
+			//cout << CountTime << endl;
+			
 
 			//Spacebar KeyPressed 
 			if (firerate < 20) { firerate++; }
@@ -329,10 +351,16 @@ int main()
 					enemies2.push_back(Enemy(Enemymini2));
 				}
 
-				if (CountTime >= 60 /*and CountTime <= 100*/)
+				if (CountTime >= 60 and CountTime <= 120)
 				{
 					Enemymedium1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium1.Sprite_enemy.getSize().y));
 					enemies3.push_back(Enemy(Enemymedium1));
+				}
+
+				if (CountTime >= 90 and CountTime <= 150)
+				{
+					Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
+					enemies4.push_back(Enemy(Enemymedium2));
 				}
 
 				enemySpawnTimer = 0;
@@ -364,6 +392,16 @@ int main()
 				if (enemies3[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies3.erase(enemies3.begin() + i);
+				}
+
+			}
+
+			for (int i = 0; i < enemies4.size(); i++)
+			{
+				enemies4[i].Update(deltatime, i);
+				if (enemies4[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies4.erase(enemies4.begin() + i);
 				}
 
 			}
@@ -431,6 +469,28 @@ int main()
 					
 			}
 			
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies4.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies4[j].Sprite_enemy.getGlobalBounds()))
+					{
+						enemies4[i].bloodenemymedium--;
+						bullets.erase(bullets.begin() + i);
+						if (enemies4[i].bloodenemymedium == 0)
+						{
+							score += 20;
+							enemies4.erase(enemies4.begin() + j);
+
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+				}
+
+			}
 
 			//collistion player vs enemy
 			for (size_t i = 0; i < enemies1.size(); i++)
@@ -460,10 +520,23 @@ int main()
 				}
 			}
 
-			
+			for (size_t i = 0; i < enemies4.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies4[i].Sprite_enemy.getGlobalBounds()))
+				{
+					enemies4.erase(enemies4.begin() + i);
+					blood -= 1;
+				}
+			}
 
-			for (Background& background : backgrounds)
-				background.Update(deltatime);
+			if (pausemenu.Sprite_Button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+					/*mainmenustate = 0;*/
+				}
+			}
 
 			//animation update
 			animation.Update(1, deltatime);
@@ -472,14 +545,17 @@ int main()
 			window.clear();
 
 
-			//draw background
+			//draw background game state
 			for (Background& background : backgrounds)
-
+				background.Update(deltatime);
+			for (Background& background : backgrounds)
 				background.Draw(window);
 
 			player.Update();
 			player.move(deltatime);
 
+			//draw pausebutton
+			pausemenu.Draw(window);
 
 			//draw bullet
 			for (int i = 0; i < bullets.size(); i++)
@@ -503,6 +579,13 @@ int main()
 				enemies3[i].Draw(window);
 			}
 
+
+			for (int i = 0; i < enemies4.size(); i++)
+			{
+				enemies4[i].Draw(window);
+			}
+
+			
 
 			//draw player
 			player.Draw(window);

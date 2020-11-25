@@ -1,5 +1,6 @@
 #include "Background.h"
-
+#include <iostream>
+using namespace std;
 Background::Background(sf::Texture* texture, float speed)
 {
 	this->speed = speed;
@@ -16,7 +17,7 @@ Background::Background(sf::Texture* texture, float speed)
 	}
 	else
 	{
-		body[1].setPosition(-size.x , 0.0f);
+		body[1].setPosition(-size.x, 0.0f);
 	}
 }
 void Background::Update(float deltatime)
@@ -24,13 +25,11 @@ void Background::Update(float deltatime)
 	for (int i = 0; i < 2; i++)
 	{
 		position = body[i].getPosition();
-
-		body[i].move(speed * deltatime, 0);
-
-		if (position.x <= -size.x && speed < 0)
-			body[i].setPosition(size.x -8.0f, position.y);
-		else if (position.x >= size.x && speed > 0)
-			body[i].setPosition(-size.x -8.0f, position.y);
+		cout << -size.x << position.x <<endl;
+		
+		if (position.x -5 < (-size.x) && speed < 0)
+			body[i].setPosition(size.x, position.y);
+		body[i].move(speed*deltatime, 0);
 	}
 }
 void Background::Draw(sf::RenderWindow& window)
