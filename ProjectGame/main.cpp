@@ -203,6 +203,34 @@ int main()
 	showwhelm.setTexture(whelm);
 	showwhelm.setPosition(500, -10);
 
+	//how to play
+	sf::RectangleShape bc;
+	bc.setSize(sf::Vector2f(700, 500));
+	bc.setFillColor(sf::Color::White);
+	bc.setPosition(500, 450);
+	bc.setOrigin(bc.getGlobalBounds().width / 2, bc.getGlobalBounds().height / 2);
+	bool flag[10];
+	for (size_t i = 0; i <= 9; i++)
+	{
+		flag[i] = true;
+	}
+
+	sf::Texture htp1;
+	htp1.loadFromFile("howtoplay/1.png");
+	sf::Sprite htp01;
+	htp01.setTexture(htp1);
+	htp01.setScale(0.7, 0.7);
+	htp01.setPosition(400, 375);
+	htp01.setOrigin(htp01.getGlobalBounds().width / 2, htp01.getGlobalBounds().height / 2);
+
+	sf::Texture htp2;
+	htp2.loadFromFile("howtoplay/2.png");
+	sf::Sprite htp02;
+	htp02.setTexture(htp2);
+	htp02.setScale(0.7, 0.7);
+	htp02.setPosition(400, 375);
+	htp02.setOrigin(htp02.getGlobalBounds().width / 2, htp02.getGlobalBounds().height / 2);
+
 	//score
 	sf::Font font;
 	font.loadFromFile("font/fontscore.ttf");
@@ -320,36 +348,18 @@ int main()
 
 		if (Howtoplaystate == 1)
 		{
-			
-			sf::RectangleShape bc;
-			bc.setSize(sf::Vector2f(700, 500));
-			bc.setFillColor(sf::Color::White);
-			bc.setPosition(500, 450);
-			bc.setOrigin(bc.getGlobalBounds().width / 2, bc.getGlobalBounds().height / 2);
+			cout << flag[1];
 			window.draw(bc);
-
-			sf::Texture htp1;
-			htp1.loadFromFile("howtoplay/1.png");
-			sf::Sprite htp01;
-			htp01.setTexture(htp1);
-			htp01.setScale(0.7, 0.7);
-			htp01.setPosition(400,375);
-			htp01.setOrigin(htp01.getGlobalBounds().width / 2, htp01.getGlobalBounds().height / 2);
-
-			sf::Texture htp2;
-			htp2.loadFromFile("howtoplay/2.png");
-			sf::Sprite htp02;
-			htp02.setTexture(htp2);
-			htp02.setScale(0.7, 0.7);
-			htp02.setPosition(400, 375);
-			htp02.setOrigin(htp02.getGlobalBounds().width / 2, htp02.getGlobalBounds().height / 2);
 
 			if (bc.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and flag[1])
 				{
 					slide++;
+					flag[1] = false;
 				}
+				if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					flag[1] = true;
 			}
 
 			if (slide == 1)
@@ -369,6 +379,7 @@ int main()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 					Howtoplaystate = 0;
+					slide = 0;
 				}
 			}
 		}
