@@ -25,7 +25,7 @@ void Background::Update(float deltatime)
 	for (int i = 0; i < 2; i++)
 	{
 		position = body[i].getPosition();
-		cout << -size.x << position.x <<endl;
+		/*cout << -size.x << position.x <<endl;*/
 		
 		if (position.x -5 < (-size.x) && speed < 0)
 			body[i].setPosition(size.x, position.y);

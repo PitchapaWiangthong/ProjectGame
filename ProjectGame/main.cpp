@@ -14,6 +14,7 @@
 #include "Mainmenu.h"
 #include "Gameover.h"
 #include "PauseMenu.h"
+#include "Item.h"
 
 
 using namespace std;
@@ -32,9 +33,13 @@ int main()
 	int CountBulletEnemymini = 0;
 	int score = 0;
 	int blood = 6;
+	int counter = 0;
 	float CountTime = 0;
-	int mainmenustate = 1; //0 = not display , 1,3 = display
+	int slide = 0;
+	int Mainmenustate = 1; //0 = not display , 1,3 = display
 	int GameOverstate = 1; //1 = not display , 0 = display
+	int Pausemenustate = 0; //0 = not display , 1 = display
+	int Howtoplaystate = 0;//0 = not displlay , 1= display
 	srand(time(NULL));
 
 
@@ -100,6 +105,16 @@ int main()
 	Bullet Bulletyellow(&bulletY);
 	Bulletyellow.Sprite_bullet.setScale(0.8, 0.8);
 
+	//item vector
+	vector<Item>::const_iterator iter;
+
+	//friutsItem
+	sf::Texture banana;
+	banana.loadFromFile("item/banana.png");
+	Item Bananaitem(&banana);
+	Bananaitem.Sprite_Item.setScale(0.5, 0.5);
+	vector<Item> item1;
+
 
 	//enemies
 	sf::Texture enemySmallOrange;
@@ -122,10 +137,10 @@ int main()
 	Enemy Enemymedium2(&enemyMediumPink);
 	vector<Enemy> enemies4;
 	
-	//sf::Texture enemyBig;
-	//enemyBig.loadFromFile("enemy/big1.png");
-	//Enemy Enemybig1(&enemyBig);
-	//vector<Enemy> enemies5;
+	sf::Texture enemyBig;
+	enemyBig.loadFromFile("enemy/bigg.png");
+	Enemy Enemybig1(&enemyBig);
+	vector<Enemy> enemies5;
 
 
 	//enemies animation
@@ -206,7 +221,7 @@ int main()
 		deltatime = clock.restart().asSeconds();
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			window.close();
-		if (mainmenustate == 1 or mainmenustate == 3);
+		if (Mainmenustate == 1 or Mainmenustate == 3 or Pausemenustate == 1)
 		{
 
 			
@@ -233,7 +248,7 @@ int main()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 
-					mainmenustate = 0;
+					Mainmenustate = 0;
 					startmusic.stop();
 						level1.play();
 					
@@ -245,6 +260,7 @@ int main()
 				mainmenu.mainMenu[0].setScale(1, 1);
 
 			}
+
 			if (mainmenu.hitbox[1].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
 				mainmenu.mainMenu[1].setFillColor(sf::Color::Blue);
@@ -253,13 +269,14 @@ int main()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 
-					/*mainmenustate = 0;*/
+					Howtoplaystate = 1;
 				}
 			}
 			else
 			{
 				mainmenu.mainMenu[1].setFillColor(sf::Color::Black);
 				mainmenu.mainMenu[1].setScale(1, 1);
+
 			}
 
 			if (mainmenu.hitbox[2].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
@@ -270,7 +287,7 @@ int main()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 
-					window.close();
+					/*mainmenustate = 0;*/
 				}
 			}
 			else
@@ -279,10 +296,84 @@ int main()
 				mainmenu.mainMenu[2].setScale(1, 1);
 			}
 
+			if (mainmenu.hitbox[3].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				mainmenu.mainMenu[3].setFillColor(sf::Color::Blue);
+				mainmenu.mainMenu[3].setScale(1.5, 1.5);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+					window.close();
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[3].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[3].setScale(1, 1);
+			}
+
 			//draw mainmenu
 			mainmenu.Draw(window);
 		}
 		
+
+		if (Howtoplaystate == 1)
+		{
+			
+			sf::RectangleShape bc;
+			bc.setSize(sf::Vector2f(700, 500));
+			bc.setFillColor(sf::Color::White);
+			bc.setPosition(500, 450);
+			bc.setOrigin(bc.getGlobalBounds().width / 2, bc.getGlobalBounds().height / 2);
+			window.draw(bc);
+
+			sf::Texture htp1;
+			htp1.loadFromFile("howtoplay/1.png");
+			sf::Sprite htp01;
+			htp01.setTexture(htp1);
+			htp01.setScale(0.7, 0.7);
+			htp01.setPosition(400,375);
+			htp01.setOrigin(htp01.getGlobalBounds().width / 2, htp01.getGlobalBounds().height / 2);
+
+			sf::Texture htp2;
+			htp2.loadFromFile("howtoplay/2.png");
+			sf::Sprite htp02;
+			htp02.setTexture(htp2);
+			htp02.setScale(0.7, 0.7);
+			htp02.setPosition(400, 375);
+			htp02.setOrigin(htp02.getGlobalBounds().width / 2, htp02.getGlobalBounds().height / 2);
+
+			if (bc.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					slide++;
+				}
+			}
+
+			if (slide == 1)
+			{
+				window.draw(htp01);
+			}
+			if (slide == 2)
+			{
+				window.draw(htp02);
+			}
+			if (slide > 2)
+			{
+				slide = 1;
+			}
+			if (!bc.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					Howtoplaystate = 0;
+				}
+			}
+		}
+
+
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -294,7 +385,7 @@ int main()
 					break;
 			}
 		}
-		if (mainmenustate == 0) 
+		if (Mainmenustate == 0) 
 		{
 			
 			CountTime += deltatime;
@@ -359,6 +450,12 @@ int main()
 					enemies4.push_back(Enemy(Enemymedium2));
 				}
 
+				if (CountTime >= 120)
+				{
+					Enemybig1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemybig1.Sprite_enemy.getSize().y));
+					enemies5.push_back(Enemy(Enemybig1));
+				}
+
 				enemySpawnTimer = 0;
 			}
 
@@ -398,6 +495,16 @@ int main()
 				if (enemies4[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies4.erase(enemies4.begin() + i);
+				}
+
+			}
+
+			for (int i = 0; i < enemies5.size(); i++)
+			{
+				enemies5[i].Update(deltatime, i);
+				if (enemies5[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies5.erase(enemies5.begin() + i);
 				}
 
 			}
@@ -488,6 +595,29 @@ int main()
 
 			}
 
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies5.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies5[j].Sprite_enemy.getGlobalBounds()))
+					{
+						enemies5[i].bloodenemybig--;
+						bullets.erase(bullets.begin() + i);
+						if (enemies5[i].bloodenemybig == 0)
+						{
+							score += 50;
+							enemies5.erase(enemies5.begin() + j);
+
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+				}
+
+			}
+
 			//collistion player vs enemy
 			for (size_t i = 0; i < enemies1.size(); i++)
 			{
@@ -525,13 +655,29 @@ int main()
 				}
 			}
 
-			if (pausemenu.Sprite_Button.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			for (size_t i = 0; i < enemies5.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies5[i].Sprite_enemy.getGlobalBounds()))
+				{
+					enemies5.erase(enemies5.begin() + i);
+					blood -= 1;
+				}
+			}
+
+			if (pausemenu.hitbox.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 
-					/*mainmenustate = 0;*/
+					Pausemenustate = 1;
+					Mainmenustate = 1;
 				}
+			}
+
+			if (Pausemenustate == 1)
+			{
+				level1.stop();
+				startmusic.play();
 			}
 
 			//animation update
@@ -547,11 +693,18 @@ int main()
 			for (Background& background : backgrounds)
 				background.Draw(window);
 
+			//draw pausebutton
+			pausemenu.Draw(window);
+
 			player.Update();
 			player.move(deltatime);
 
-			//draw pausebutton
-			pausemenu.Draw(window);
+
+			//draw item
+			for (int i = 0; i < item1.size(); i++)
+			{
+				item1[i].Draw(window);
+			}
 
 			//draw bullet
 			for (int i = 0; i < bullets.size(); i++)
@@ -575,13 +728,15 @@ int main()
 				enemies3[i].Draw(window);
 			}
 
-
 			for (int i = 0; i < enemies4.size(); i++)
 			{
 				enemies4[i].Draw(window);
 			}
 
-			
+			for (int i = 0; i < enemies5.size(); i++)
+			{
+				enemies5[i].Draw(window);
+			}
 
 			//draw player
 			player.Draw(window);

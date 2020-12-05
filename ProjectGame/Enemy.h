@@ -15,6 +15,7 @@ public:
 	void move(float deltatime);
 	
 	int bloodenemymedium = 2;
+	int bloodenemybig = 3;
 	float dx = 0;
 	float dy = 0;
 	float speed = 150;

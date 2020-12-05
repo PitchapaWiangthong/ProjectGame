@@ -8,7 +8,10 @@ public:
 	~PauseMenu();
 
 	void Draw(sf::RenderWindow& window);
-	sf::Sprite Sprite_Button;
-	sf::Texture Texture_Button;
+	sf::Sprite Sprite_Button_pause;
+	sf::Texture Texture_Button_pause;
+	
+	sf::Text pauseMenu;
+	sf::RectangleShape hitbox;
 };
 
