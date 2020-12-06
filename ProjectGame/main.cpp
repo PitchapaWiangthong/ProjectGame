@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "Enemy1.h"
 #include "Animation.h"
 #include "Mainmenu.h"
 #include "Gameover.h"
@@ -138,9 +139,9 @@ int main()
 	vector<Enemy> enemies4;
 	
 	sf::Texture enemyBig;
-	enemyBig.loadFromFile("enemy/bigg.png");
-	Enemy Enemybig1(&enemyBig);
-	vector<Enemy> enemies5;
+	enemyBig.loadFromFile("enemy/big1.png");
+	Enemy1 Enemybig1(&enemyBig);
+	vector<Enemy1> enemies5;
 
 
 	//enemies animation
@@ -348,7 +349,7 @@ int main()
 
 		if (Howtoplaystate == 1)
 		{
-			cout << flag[1];
+			/*cout << flag[1];*/
 			window.draw(bc);
 
 			if (bc.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
@@ -461,10 +462,10 @@ int main()
 					enemies4.push_back(Enemy(Enemymedium2));
 				}
 
-				if (CountTime >= 120)
+				if (CountTime >= 0)
 				{
-					Enemybig1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemybig1.Sprite_enemy.getSize().y));
-					enemies5.push_back(Enemy(Enemybig1));
+					Enemybig1.Sprite_enemy_1.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemybig1.Sprite_enemy_1.getSize().y));
+					enemies5.push_back(Enemy1(Enemybig1));
 				}
 
 				enemySpawnTimer = 0;
@@ -513,7 +514,7 @@ int main()
 			for (int i = 0; i < enemies5.size(); i++)
 			{
 				enemies5[i].Update(deltatime, i);
-				if (enemies5[i].Sprite_enemy.getPosition().x < -130)
+				if (enemies5[i].Sprite_enemy_1.getPosition().x < -130)
 				{
 					enemies5.erase(enemies5.begin() + i);
 				}
@@ -611,13 +612,13 @@ int main()
 				for (size_t j = 0; j < enemies5.size(); j++)
 				{
 
-					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies5[j].Sprite_enemy.getGlobalBounds()))
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies5[j].Sprite_enemy_1.getGlobalBounds()))
 					{
 						enemies5[i].bloodenemybig--;
 						bullets.erase(bullets.begin() + i);
 						if (enemies5[i].bloodenemybig == 0)
 						{
-							score += 50;
+							score += 30;
 							enemies5.erase(enemies5.begin() + j);
 
 						}
@@ -668,7 +669,7 @@ int main()
 
 			for (size_t i = 0; i < enemies5.size(); i++)
 			{
-				if (player.Sprite_ship.getGlobalBounds().intersects(enemies5[i].Sprite_enemy.getGlobalBounds()))
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies5[i].Sprite_enemy_1.getGlobalBounds()))
 				{
 					enemies5.erase(enemies5.begin() + i);
 					blood -= 1;
@@ -704,8 +705,7 @@ int main()
 			for (Background& background : backgrounds)
 				background.Draw(window);
 
-			//draw pausebutton
-			pausemenu.Draw(window);
+			
 
 			player.Update();
 			player.move(deltatime);
@@ -754,6 +754,9 @@ int main()
 
 			//draw text
 			window.draw(textscore);
+
+			//draw pausebutton
+			pausemenu.Draw(window);
 
 			//draw heart
 			if (blood == 6)
