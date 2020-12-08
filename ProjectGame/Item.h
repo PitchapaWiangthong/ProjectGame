@@ -1,17 +1,27 @@
-#pragma once
 #include <SFML/Graphics.hpp>
 
-
-class Item 
+class Item
 {
-public: 
-	sf::RectangleShape Sprite_Item;
-	Item(sf::Texture* texture);
+public:
+	sf::Sprite Sprite_item;
+	sf::Vector2f itemposition;
+	sf::Vector2f movement;
+
+	Item(sf::Texture& texture, const sf::Vector2i &row_colum);
 	~Item();
-
-	void update();
+	void Update(const float &delteTime);
 	void Draw(sf::RenderWindow& window);
+	void move(float deltaTime);
 
+	float dx = 0;
+	float dy = 0;
+
+private:
+	float offsetanimation = 0;
+	sf::Vector2f imageSize;
+	sf::Vector2f currentframe;
+	short int row = 0;
+	short int colum = 0;
+	short int i = 0;
 
 };
-

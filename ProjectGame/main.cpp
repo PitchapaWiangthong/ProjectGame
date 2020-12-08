@@ -11,7 +11,6 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "Enemy1.h"
-#include "Animation.h"
 #include "Mainmenu.h"
 #include "Gameover.h"
 #include "PauseMenu.h"
@@ -107,13 +106,13 @@ int main()
 	Bulletyellow.Sprite_bullet.setScale(0.8, 0.8);
 
 	//item vector
-	vector<Item>::const_iterator iter;
+	//vector<Item>::const_iterator iter;
 
 	//friutsItem
 	sf::Texture banana;
 	banana.loadFromFile("item/banana.png");
-	Item Bananaitem(&banana);
-	Bananaitem.Sprite_Item.setScale(0.5, 0.5);
+	
+
 	vector<Item> item1;
 
 
@@ -144,8 +143,6 @@ int main()
 	vector<Enemy1> enemies5;
 
 
-	//enemies animation
-	Animation animation(&enemySmallOrange, sf::Vector2u(1, 3), 0.3f);
 
 	//heart
 	sf::Texture blood0;
@@ -190,6 +187,14 @@ int main()
 	bloodempty.setTexture(bloodrd);
 	bloodempty.setPosition(60, 670);
 	bloodempty.setScale(0.8, 0.8);
+	
+	//item
+	sf::Texture itemGreen;
+	itemGreen.loadFromFile("item/itemshootgreen.png");
+
+
+	Item testItem(itemGreen , sf::Vector2i( 1 , 4));
+
 
 	//over whelm
 	sf::Texture over;
@@ -422,7 +427,6 @@ int main()
 				firerate = 0;
 
 			}
-
 
 			//bullets movement
 			for (int i = 0; i < bullets.size(); i++)
@@ -693,7 +697,8 @@ int main()
 			}
 
 			//animation update
-			animation.Update(1, deltatime);
+			testItem.Update(deltatime);
+
 
 			//draw
 			window.clear();
@@ -711,11 +716,15 @@ int main()
 			player.move(deltatime);
 
 
-			//draw item
+			//draw item fruits
 			for (int i = 0; i < item1.size(); i++)
 			{
 				item1[i].Draw(window);
 			}
+
+
+			//draw item shoot
+
 
 			//draw bullet
 			for (int i = 0; i < bullets.size(); i++)
@@ -748,6 +757,7 @@ int main()
 			{
 				enemies5[i].Draw(window);
 			}
+			testItem.Draw(window);
 
 			//draw player
 			player.Draw(window);

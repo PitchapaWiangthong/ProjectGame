@@ -19,8 +19,7 @@ public:
 	float dy = 0;
 	float speed = 100;
 private:
-	int offsetanimation = 1;
-	float offset = 0;
+	
 
 	sf::Vector2f imageSize;
 

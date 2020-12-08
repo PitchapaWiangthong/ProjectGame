@@ -1,23 +1,42 @@
 #include "Item.h"
-#include "Enemy.h"
 
-Item::Item(sf::Texture* texture)
+Item::Item(sf::Texture& texture , const sf::Vector2i &row_colum):
+	row(row_colum.x) ,
+	colum(row_colum.y)
+
 {
+	this->Sprite_item.setTexture(texture);
+	this->currentframe.x = texture.getSize().x / row;
+	this->currentframe.y = texture.getSize().y / colum;
+	this->Sprite_item.setTextureRect(sf::IntRect(0, 0, this->currentframe.x, this->currentframe.y));
+	this->Sprite_item.setPosition(0, 0);
 
-	Sprite_Item.setTexture(texture);
-	Sprite_Item.setSize(sf::Vector2f(texture->getSize().x, texture->getSize().y));
+
 
 }
 
-Item::~Item()
-{
-}
+Item::~Item() { }
 
-void Item::update()
+void Item::Update(const float& delteTime)
 {
-	/*Sprite_Item.setPosition(.getPosition());*/
+	this->Sprite_item.setTextureRect(sf::IntRect(currentframe.x * 0, currentframe.y * i, currentframe.x, currentframe.y));
+	this->offsetanimation += delteTime;
+	if (offsetanimation > 0.2)
+	{
+		offsetanimation -= 0.2;
+		i++;
+	}
+	if (i >= colum)
+	{
+		i = 0;
+	}
 }
 
 void Item::Draw(sf::RenderWindow& window)
+{
+	window.draw(this->Sprite_item);
+}
+
+void Item::move(float deltaTime)
 {
 }
