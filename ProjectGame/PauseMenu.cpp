@@ -8,6 +8,13 @@ PauseMenu::PauseMenu(sf::Vector2f position)
 	sf::Vector2f spawnPoint = { 940.f,10.f };
 	Sprite_Button_pause.setPosition(spawnPoint);
 
+	font.loadFromFile(("font/fontscore.ttf"));
+	pauseMenu.setFont(font);
+	pauseMenu.setFillColor(sf::Color::Black);
+	pauseMenu.setString("Pause");
+	pauseMenu.setCharacterSize(100);
+	pauseMenu.setPosition(400, 300);
+
 	hitbox.setSize(sf::Vector2f(Sprite_Button_pause.getGlobalBounds().width,Sprite_Button_pause.getGlobalBounds().height));
 	hitbox.setPosition(sf::Vector2f(Sprite_Button_pause.getGlobalBounds().left,Sprite_Button_pause.getGlobalBounds().top));
 }

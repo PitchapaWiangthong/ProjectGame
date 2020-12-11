@@ -11,6 +11,7 @@ public:
 	sf::Sprite Sprite_Button_pause;
 	sf::Texture Texture_Button_pause;
 	
+	sf::Font font;
 	sf::Text pauseMenu;
 	sf::RectangleShape hitbox;
 };

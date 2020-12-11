@@ -9,7 +9,7 @@ public:
 
 	Item(sf::Texture& texture, const sf::Vector2i &row_colum);
 	~Item();
-	void Update(const float &delteTime);
+	void Update(const float &deltaTime);
 	void Draw(sf::RenderWindow& window);
 	void move(float deltaTime);
 

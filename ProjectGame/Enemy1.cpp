@@ -1,45 +1,39 @@
 #include "Enemy1.h"
 
-Enemy1::Enemy1(sf::Texture* texture)
+Enemy1::Enemy1(sf::Texture& texture, const sf::Vector2i& row_colum):
+	row(row_colum.x),
+	colum(row_colum.y)
 {
-	Sprite_enemy_1.setTexture(texture);
-	Sprite_enemy_1.setSize(sf::Vector2f(texture->getSize().x / 2, texture->getSize().y));
-	enemyposition_1.x = texture->getSize().x / 2;
-	enemyposition_1.y = texture->getSize().y;
-	sf::Vector2f spawnpoint = { 1000.f,256.f };
-	Sprite_enemy_1.setPosition(spawnpoint);
-	Sprite_enemy_1.setScale(1.25, 1.25);
+	this->Sprite_enemy1.setTexture(&texture);
+	this->currentframe.x = texture.getSize().x / row;
+	this->currentframe.y = texture.getSize().y / colum;
+	this->Sprite_enemy1.setTextureRect(sf::IntRect(0, 0, this->currentframe.x, this->currentframe.y));
 
 }
 
-Enemy1::~Enemy1()
+Enemy1::~Enemy1() { }
+
+void Enemy1::Update(const float& deltaTime)
 {
-}
-
-void Enemy1::Update(float deltatime, int i)
-{
-	Sprite_enemy_1.move(deltatime * -200, cos(i));
-	if (cos(i) > 0)
+	this->Sprite_enemy1.setTextureRect(sf::IntRect(currentframe.x * 0, currentframe.y * i, currentframe.x, currentframe.y));
+	this->offsetanimation += deltaTime;
+	if (offsetanimation > 0.2)
 	{
-		Sprite_enemy_1.setTextureRect(sf::IntRect(enemyposition_1.x * 0, enemyposition_1.y * 1, enemyposition_1.x, enemyposition_1.y));
+		offsetanimation -= 0.2;
+		i++;
 	}
-	if (cos(i) < 0)
+	if (i >= colum)
 	{
-		Sprite_enemy_1.setTextureRect(sf::IntRect(enemyposition_1.x * 0, enemyposition_1.y * 0, enemyposition_1.x, enemyposition_1.y));
+		i = 0;
 	}
-	else
-	{
-		Sprite_enemy_1.setTextureRect(sf::IntRect(enemyposition_1.x * 0, enemyposition_1.y * 1, enemyposition_1.x, enemyposition_1.y));
-
-	}
-
 }
 
 void Enemy1::Draw(sf::RenderWindow& window)
 {
-	window.draw(Sprite_enemy_1);
+	window.draw(this->Sprite_enemy1);
 }
 
-void Enemy1::move(float deltatime)
+void Enemy1::Move(float deltaTime)
 {
+
 }

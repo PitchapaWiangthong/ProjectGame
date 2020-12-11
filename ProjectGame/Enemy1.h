@@ -3,24 +3,26 @@
 class Enemy1
 {
 public:
-	sf::RectangleShape Sprite_enemy_1;
-	sf::Vector2f enemyposition_1;
+	sf::RectangleShape Sprite_enemy1;
+	sf::Vector2f enemy1position;
+	sf::Vector2f movement;
 
-	Enemy1(sf::Texture* texture);
+	Enemy1(sf::Texture& texture, const sf::Vector2i& row_colum);
 	~Enemy1();
-
-	void Update(float deltatime, int i);
+	void Update(const float& deltaTime);
 	void Draw(sf::RenderWindow& window);
-	void move(float deltatime);
+	void Move(float deltaTime);
 
-	int bloodenemybig = 3;
+	int bloodenemybig = 4;
 	float dx = 0;
 	float dy = 0;
-	float speed = 150;
-private:
-	int offsetanimation = 1;
-	float offset = 0;
 
+private:
+	float offsetanimation = 0;
 	sf::Vector2f imageSize;
+	sf::Vector2f currentframe;
+	short int row = 0;
+	short int colum = 0;
+	short int i = 0;
 };
 
