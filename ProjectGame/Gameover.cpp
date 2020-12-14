@@ -17,7 +17,7 @@ Gameover::Gameover(float width, float height)
 	HighScoreText.setCharacterSize(50);
 	HighScoreText.setPosition(300, 300);
 
-
+	
 
 }
 

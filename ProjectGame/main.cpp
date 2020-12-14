@@ -6,6 +6,9 @@
 #include <SFML/Audio.hpp>
 #include <vector>
 #include <cstdlib>
+#include <utility>
+#include <fstream>
+#include <algorithm>
 #include "Background.h"
 #include "Player.h"
 #include "Bullet.h"
@@ -17,6 +20,9 @@
 #include "Item.h"
 #include "DropItem.h"
 
+std::vector<std::pair<std::string, int>> vec;
+bool sortbysecdesc(const std::pair<std::string, int>& a, const std::pair<std::string, int>& b);
+
 
 using namespace std;
 int main()
@@ -24,12 +30,13 @@ int main()
 	//window
 	sf::RenderWindow window(sf::VideoMode(1000, 768), "OverWhelm!", sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
-	sf::Clock clock;
-
+	sf::Clock clock,clock2;
+	
 
 	//variable
 	float deltatime = 0.0f;
 	float firerate = 0;
+	float debounce = 0;
 	int enemySpawnTimer = 0;
 	int itemSpawnTimer = 0;
 	int CountBulletEnemymini = 0;
@@ -45,14 +52,17 @@ int main()
 		}
 	float CountTime = 0;
 	int slide = 0;
-	int Mainmenustate = 1; //0 = not display , 1,3 = display
+	int Mainmenustate = 3; //0 = not display , 1,3 = display
 	int GameOverstate = 1; //1 = not display , 0 = display
 	int Pausemenustate = 0; //0 = not display , 1 = display
 	int Howtoplaystate = 0; //0 = not displlay , 1= display
 	int Soundstate = 1; //0 = not play , 1 = play
+	int Namestate = 0; //0 = not display , 1 = display
 
 	srand(time(NULL));
 
+	sf::Font font;
+	font.loadFromFile("font/fontscore.ttf");
 
 //background
 	sf::Texture bgTexture[2];
@@ -74,9 +84,9 @@ int main()
 	int positionsoundY = soundimage.getSize().y;
 
 
-
 //pause menu
 	PauseMenu pausemenu(sf::Vector2f(900.f, 0.f));
+
 
 //sound
 	//background started
@@ -169,7 +179,6 @@ int main()
 	
 
 
-
 //heart
 	sf::Texture blood0;
 	blood0.loadFromFile("blood/full.png");
@@ -229,6 +238,15 @@ int main()
 	Item Itemshoot_R(itemRed, sf::Vector2i(1, 7));
 	vector<Item> Item3;
 
+//name 
+	sf::Text name;
+	name.setFont(font);
+	name.setString("Name : ");
+	name.setFillColor(sf::Color::Black);
+	name.setPosition(200,300 );
+	name.setCharacterSize(80);
+	sf::String nameplayer;
+
 
 //over whelm
 	sf::Texture over;
@@ -242,6 +260,7 @@ int main()
 	sf::Sprite showwhelm;
 	showwhelm.setTexture(whelm);
 	showwhelm.setPosition(500, -10);
+
 
 //how to play
 	sf::RectangleShape bc;
@@ -267,9 +286,8 @@ int main()
 	htp02.setPosition(400, 375);
 	htp02.setOrigin(htp02.getGlobalBounds().width / 2, htp02.getGlobalBounds().height / 2);
 
+
 //score
-	sf::Font font;
-	font.loadFromFile("font/fontscore.ttf");
 	sf::Text textscore;
 	textscore.setFont(font);
 	textscore.setString("SCORE : ");
@@ -277,15 +295,33 @@ int main()
 	textscore.setPosition(40, 0);
 	textscore.setCharacterSize(40);
 
+//high score
+	
+
+	
+
 //gameover
 	Gameover gameover(600, 600);
 
 	while (window.isOpen())
 	{
 		deltatime = clock.restart().asSeconds();
+
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+
+			case sf::Event::Closed:
+				window.close();
+				break;
+			}
+		}
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 			window.close();
-		if (Mainmenustate == 1 or Mainmenustate == 3 or Pausemenustate == 1)
+		if (Mainmenustate == 1  or Pausemenustate == 1)
 		{
 
 			GameOverstate = 1;
@@ -315,11 +351,9 @@ int main()
 				
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-
 					Mainmenustate = 0;
-					startmusic.stop();
-						level1.play();
-					
+					startmusic.pause();
+					level1.play();
 				}
 			}
 			else
@@ -355,7 +389,7 @@ int main()
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
 
-					/*mainmenustate = 0;*/
+					
 				}
 			}
 			else
@@ -385,7 +419,141 @@ int main()
 			//draw mainmenu
 			mainmenu.Draw(window);
 		}
+
+		if (Mainmenustate == 3)
+		{
+			GameOverstate = 1;
+
+			//draw background menu state
+
+			for (Background& background : backgrounds)
+				background.Update(deltatime);
+			for (Background& background : backgrounds)
+			{
+				background.Draw(window);
+			}
+
+			/*window.draw(sound);*/
+
+
+			//draw overwhelm
+			if (showover.getPosition().y < 60) { showover.move(0, 1.0); }
+			if (showwhelm.getPosition().y < 60) { showwhelm.move(0, 1.0); }
+			window.draw(showover);
+			window.draw(showwhelm);
+
+			//hitbox
+
+			if (mainmenu.hitbox[0].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				mainmenu.mainMenu[0].setFillColor(sf::Color::Blue);
+				mainmenu.mainMenu[0].setScale(1.5, 1.5);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+					Namestate = 1;
+					startmusic.stop();
+					level1.play();
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[0].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[0].setScale(1, 1);
+
+			}
+
+			if (mainmenu.hitbox[1].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				mainmenu.mainMenu[1].setFillColor(sf::Color::Blue);
+				mainmenu.mainMenu[1].setScale(1.5, 1.5);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+					Howtoplaystate = 1;
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[1].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[1].setScale(1, 1);
+
+			}
+
+			if (mainmenu.hitbox[2].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				mainmenu.mainMenu[2].setFillColor(sf::Color::Blue);
+				mainmenu.mainMenu[2].setScale(1.5, 1.5);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[2].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[2].setScale(1, 1);
+			}
+
+			if (mainmenu.hitbox[3].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
+			{
+				mainmenu.mainMenu[3].setFillColor(sf::Color::Blue);
+				mainmenu.mainMenu[3].setScale(1.5, 1.5);
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				{
+
+					window.close();
+				}
+			}
+			else
+			{
+				mainmenu.mainMenu[3].setFillColor(sf::Color::Black);
+				mainmenu.mainMenu[3].setScale(1, 1);
+			}
+
+
+			//draw mainmenu
+			mainmenu.Draw(window);
+		}
 		
+		if (Namestate == 1)
+		{
+			for (Background& background : backgrounds)
+				background.Update(deltatime);
+			for (Background& background : backgrounds)
+			{
+				background.Draw(window);
+			}
+
+
+			if (event.type == sf::Event::TextEntered and debounce < clock2.getElapsedTime().asSeconds())
+			{
+
+				debounce = clock2.getElapsedTime().asSeconds() + 0.2;
+				if (event.text.unicode >= 33 && event.text.unicode <= 126 && nameplayer.getSize() <= 13 && event.text.unicode != 44)
+				{
+					nameplayer += event.text.unicode;
+				}
+				else if (event.text.unicode == 8)//backspace
+				{
+					nameplayer = nameplayer.substring(0, nameplayer.getSize() - 1);
+				}
+				else if (event.text.unicode == 13 && nameplayer.getSize() > 0)//enter
+				{
+					Mainmenustate = 0;
+				}
+			}
+			
+
+			name.setString("Name : " +nameplayer);
+
+			window.draw(name);
+
+		}
 
 		if (Howtoplaystate == 1)
 		{
@@ -426,17 +594,7 @@ int main()
 		}
 
 
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			switch (event.type)
-			{
-
-				case sf::Event::Closed:
-					window.close();
-					break;
-			}
-		}
+	
 		if (Mainmenustate == 0) 
 		{
 			
@@ -471,6 +629,7 @@ int main()
 				if (bullets[i].Sprite_bullet.getPosition().x > window.getSize().x)
 				{
 					bullets.erase(bullets.begin() + i);
+					break;
 				}
 			}
 
@@ -506,11 +665,11 @@ int main()
 			}
 
 
-			//item movement
+			//fruit item movement
 			if (itemSpawnTimer < 30) { itemSpawnTimer++; }
 			if (itemSpawnTimer >= 30)
 			{
-				if (CountTime >= 0 and CountTime <= 185 or CountTime >= 250 and CountTime <= 255)
+				if (CountTime >= 155 and CountTime <= 165 or CountTime >= 220 and CountTime <= 230)
 				{
 					Fruititem1.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem1.Sprite_Itemfruit.getSize().x)), 0.f);
 					Itembanana.push_back(DropItem(Fruititem1));
@@ -532,6 +691,7 @@ int main()
 				if (Itembanana[i].Sprite_Itemfruit.getPosition().y > 700)
 				{
 					Itembanana.erase(Itembanana.begin() + i);
+					break;
 				}
 
 			}
@@ -542,6 +702,7 @@ int main()
 				if (Itemcherry[i].Sprite_Itemfruit.getPosition().y > 700)
 				{
 					Itemcherry.erase(Itemcherry.begin() + i);
+					break;
 				}
 
 			}
@@ -552,6 +713,7 @@ int main()
 				if (Itemgrape[i].Sprite_Itemfruit.getPosition().y > 700)
 				{
 					Itemgrape.erase(Itemgrape.begin() + i);
+					break;
 				}
 
 			}
@@ -562,6 +724,7 @@ int main()
 				if (Itemwatermelon[i].Sprite_Itemfruit.getPosition().y > 700)
 				{
 					Itemwatermelon.erase(Itemwatermelon.begin() + i);
+					break;
 				}
 
 			}
@@ -573,6 +736,7 @@ int main()
 				if (enemies1[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies1.erase(enemies1.begin() + i);
+					break;
 				}
 
 			}
@@ -583,6 +747,7 @@ int main()
 				if (enemies2[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies2.erase(enemies2.begin() + i);
+					break;
 				}
 
 			}
@@ -593,6 +758,7 @@ int main()
 				if (enemies3[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies3.erase(enemies3.begin() + i);
+					break;
 				}
 
 			}
@@ -603,6 +769,7 @@ int main()
 				if (enemies4[i].Sprite_enemy.getPosition().x < -130)
 				{
 					enemies4.erase(enemies4.begin() + i);
+					break;
 				}
 
 			}
@@ -616,20 +783,19 @@ int main()
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].Sprite_enemy.getGlobalBounds()))
 					{
 						iscollision++;
-						bullets.erase(bullets.begin() + i);
-						enemies1.erase(enemies1.begin() + j);
-						if (iscollision % 10 == 0)
-						{
-							/*Itemshoot_G.Sprite_item.setPosition(window.getSize().x, rand() % int(window.getSize().y - itemGreen.getSize().y));
-							Item1.push_back(Item(Itemshoot_G));
-							Itemshoot_G.Draw(window);*/
-						}
 						score += 10;
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						enemies1.erase(enemies1.begin() + j);
 						break;
 					}
-
+					if (iscollision % 10 == 0)
+					{
+						/*Itemshoot_G.Sprite_item.setPosition(window.getSize().x, rand() % int(window.getSize().y - itemGreen.getSize().y));
+						Item1.push_back(Item(Itemshoot_G));
+						Itemshoot_G.Draw(window);*/
+					}
 				}
 
 			}
@@ -641,11 +807,11 @@ int main()
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].Sprite_enemy.getGlobalBounds()))
 					{
 						iscollision++;
-						bullets.erase(bullets.begin() + i);
-						enemies2.erase(enemies2.begin() + j);
 						score += 10;
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						enemies2.erase(enemies2.begin() + j);
 						break;
 					}
 
@@ -662,15 +828,15 @@ int main()
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].Sprite_enemy.getGlobalBounds()))
 					{
 						iscollision++;
-						enemies3[i].bloodenemymedium--;
-						bullets.erase(bullets.begin() + i);
-						if (enemies3[i].bloodenemymedium == 0)
+						enemies3[j].bloodenemymedium--;
+						if (enemies3[j].bloodenemymedium == 0)
 						{
 							score += 20;
 							enemies3.erase(enemies3.begin() + j);
 						}
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
 						break;
 					}
 				}
@@ -685,9 +851,8 @@ int main()
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies4[j].Sprite_enemy.getGlobalBounds()))
 					{
 						iscollision++;
-						enemies4[i].bloodenemymedium--;
-						bullets.erase(bullets.begin() + i);
-						if (enemies4[i].bloodenemymedium == 0)
+						enemies4[j].bloodenemymedium--;
+						if (enemies4[j].bloodenemymedium == 0)
 						{
 							score += 20;
 							enemies4.erase(enemies4.begin() + j);
@@ -695,6 +860,7 @@ int main()
 						}
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
 						break;
 					}
 				}
@@ -710,6 +876,7 @@ int main()
 				{
 					enemies1.erase(enemies1.begin() + i);
 					blood -= 1;
+					break;
 				}
 			}
 
@@ -719,6 +886,7 @@ int main()
 				{
 					enemies2.erase(enemies2.begin() + i);
 					blood -= 1;
+					break;
 				}
 			}
 
@@ -728,6 +896,7 @@ int main()
 				{
 					enemies3.erase(enemies3.begin() + i);
 					blood -= 1;
+					break;
 				}
 			}
 
@@ -737,6 +906,7 @@ int main()
 				{
 					enemies4.erase(enemies4.begin() + i);
 					blood -= 1;
+					break;
 				}
 			}
 
@@ -748,11 +918,12 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itembanana[j].Sprite_Itemfruit.getGlobalBounds()))
 					{
+						Itembanana[i].n_b++;
+						//UI
+						score += (2*(Itembanana[j].n_b));
+						textscore.setString("SCORE : " + to_string(score));
 						bullets.erase(bullets.begin() + i);
 						Itembanana.erase(Itembanana.begin() + j);
-						//UI
-						score *= 2;
-						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
 				}
@@ -766,11 +937,12 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemgrape[j].Sprite_Itemfruit.getGlobalBounds()))
 					{
+						Itemgrape[j].n_g++;
+						//UI
+						score += (3*(Itemgrape[j].n_g));
+						textscore.setString("SCORE : " + to_string(score));
 						bullets.erase(bullets.begin() + i);
 						Itemgrape.erase(Itemgrape.begin() + j);
-						//UI
-						score *= 3;
-						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
 				}
@@ -784,11 +956,12 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemcherry[j].Sprite_Itemfruit.getGlobalBounds()))
 					{
+						Itemcherry[j].n_c++;
+						//UI
+						score += (5*(Itemcherry[j].n_c));
+						textscore.setString("SCORE : " + to_string(score));
 						bullets.erase(bullets.begin() + i);
 						Itemcherry.erase(Itemcherry.begin() + j);
-						//UI
-						score *= 5;
-						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
 				}
@@ -803,11 +976,12 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemwatermelon[j].Sprite_Itemfruit.getGlobalBounds()))
 					{
+						Itemwatermelon[j].n_w++;
+						//UI
+						score += (10*(Itemwatermelon[j].n_w));
+						textscore.setString("SCORE : " + to_string(score));
 						bullets.erase(bullets.begin() + i);
 						Itemwatermelon.erase(Itemwatermelon.begin() + j);
-						//UI
-						score *= 10;
-						textscore.setString("SCORE : " + to_string(score));
 						break;
 					}
 				}
@@ -819,10 +993,11 @@ int main()
 			{
 				if (player.Sprite_ship.getGlobalBounds().intersects(Itembanana[i].Sprite_Itemfruit.getGlobalBounds()))
 				{
-					Itembanana.erase(Itembanana.begin() + i);
+					Itembanana[i].n_b++;
 					//UI
-					score *= 2;
+					score += (2*(Itembanana[i].n_b));
 					textscore.setString("SCORE : " + to_string(score));
+					Itembanana.erase(Itembanana.begin() + i);
 					break;
 				}
 			}
@@ -831,10 +1006,11 @@ int main()
 			{
 				if (player.Sprite_ship.getGlobalBounds().intersects(Itemgrape[i].Sprite_Itemfruit.getGlobalBounds()))
 				{
-					Itemgrape.erase(Itemgrape.begin() + i);
+					Itemgrape[i].n_g++;
 					//UI
-					score *= 3;
+					score += (3*(Itemgrape[i].n_g));
 					textscore.setString("SCORE : " + to_string(score));
+					Itemgrape.erase(Itemgrape.begin() + i);
 					break;
 				}
 			}
@@ -843,10 +1019,11 @@ int main()
 			{
 				if (player.Sprite_ship.getGlobalBounds().intersects(Itemcherry[i].Sprite_Itemfruit.getGlobalBounds()))
 				{
-					Itemcherry.erase(Itemcherry.begin() + i);
+					Itemcherry[i].n_c++;
 					//UI
-					score *= 5;
+					score += (5*(Itemcherry[i].n_c));
 					textscore.setString("SCORE : " + to_string(score));
+					Itemcherry.erase(Itemcherry.begin() + i);
 					break;
 				}
 			}
@@ -855,10 +1032,11 @@ int main()
 			{
 				if (player.Sprite_ship.getGlobalBounds().intersects(Itemwatermelon[i].Sprite_Itemfruit.getGlobalBounds()))
 				{
-					Itemwatermelon.erase(Itemwatermelon.begin() + i);
+					Itemwatermelon[i].n_w++;
 					//UI
-					score *= 10;
+					score += (10*(Itemwatermelon[i].n_w));
 					textscore.setString("SCORE : " + to_string(score));
+					Itemwatermelon.erase(Itemwatermelon.begin() + i);
 					break;
 				}
 			}
@@ -876,8 +1054,7 @@ int main()
 
 			if (Pausemenustate == 1)
 			{
-				level1.stop();
-				startmusic.play();
+				Namestate = 0;
 			}
 
 			//animation update
@@ -1004,11 +1181,15 @@ int main()
 					background.Update(deltatime);
 				for (Background& background : backgrounds)
 					background.Draw(window);
+
+				level1.stop();
+				startmusic.play();
+
 				gameover.Draw(window);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-					clock.restart();
-					Player player(sf::Vector2f(0.f, 400.f));
+					CountTime = 0;
+					player.Sprite_ship.setPosition(0, 400);
 					enemies1.clear();
 					enemies2.clear();
 					enemies3.clear();
@@ -1018,7 +1199,9 @@ int main()
 					Itemcherry.clear();
 					Itemwatermelon.clear();
 					blood = 6;
-					Mainmenustate = 1;
+					Mainmenustate = 3;
+					score = 0;
+					textscore.setString("SCORE : " + to_string(score));
 				}
 		
 			}
@@ -1027,4 +1210,9 @@ int main()
 		
 	}
 	return 0;
+}
+
+bool sortbysecdesc(const std::pair<std::string, int>& a, const std::pair<std::string, int>& b)
+{
+	return a.second > b.second;
 }
