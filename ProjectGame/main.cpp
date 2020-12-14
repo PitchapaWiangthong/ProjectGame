@@ -15,6 +15,7 @@
 #include "Gameover.h"
 #include "PauseMenu.h"
 #include "Item.h"
+#include "DropItem.h"
 
 
 using namespace std;
@@ -30,8 +31,9 @@ int main()
 	float deltatime = 0.0f;
 	float firerate = 0;
 	int enemySpawnTimer = 0;
+	int itemSpawnTimer = 0;
 	int CountBulletEnemymini = 0;
-	int score = 0;
+	long long int score = 0;
 	int blood = 6;
 	int counter = 0;
 	int iscollision = 0;
@@ -81,12 +83,14 @@ int main()
 	sf::Music level1;
 	level1.openFromFile("sound/level1.WAV");
 	level1.setLoop(true);
+	level1.setVolume(25);
 		
 	//background
 	sf::Music startmusic;
 	startmusic.openFromFile("sound/start.WAV");
 	startmusic.setLoop(true);
 	startmusic.play();
+	startmusic.setVolume(25);
 
 	
 
@@ -126,7 +130,20 @@ int main()
 //friutsItem
 	sf::Texture banana;
 	banana.loadFromFile("item/banana.png");
-	
+	DropItem Fruititem1(&banana);
+	vector<DropItem> Itembanana;
+	sf::Texture cherry;
+	cherry.loadFromFile("item/cherry.png");
+	DropItem Fruititem2(&cherry);
+	vector<DropItem> Itemcherry;
+	sf::Texture grape;
+	grape.loadFromFile("item/grape.png");
+	DropItem Fruititem3(&grape);
+	vector<DropItem> Itemgrape;
+	sf::Texture watermelon;
+	watermelon.loadFromFile("item/watermelon.png");
+	DropItem Fruititem4(&watermelon);
+	vector<DropItem> Itemwatermelon;
 
 
 //enemies
@@ -271,7 +288,8 @@ int main()
 		if (Mainmenustate == 1 or Mainmenustate == 3 or Pausemenustate == 1)
 		{
 
-			
+			GameOverstate = 1;
+
 			//draw background menu state
 
 			for (Background& background : backgrounds)
@@ -363,35 +381,7 @@ int main()
 				mainmenu.mainMenu[3].setScale(1, 1);
 			}
 
-			////not play sound
-			//if (sound.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
-			//{
-			//	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and flag[1])
-			//	{
-			//		Soundstate++;
-			//		flag[1] = false;
-			//	}
-			//	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			//		flag[1] = true;
-
-			//}
-			//if ( Soundstate % 2 == 0)
-			//{
-			//	sound.setTextureRect(sf::IntRect(positionsoundX * 1, positionsoundY * 0, positionsoundX, positionsoundY));
-			//	startmusic.pause();
-			//}
-			//if (Soundstate % 2 == 1)
-			//{
-			//	sound.setTextureRect(sf::IntRect(positionsoundX * 0, positionsoundY * 0, positionsoundX, positionsoundY));
-			//	if (startmusic.Stopped)
-			//	{
-			//		startmusic.play();
-			//	}
-
-			//}
-
-
-			/*cout << (bool)startmusic.Stopped <<endl;*/
+		
 			//draw mainmenu
 			mainmenu.Draw(window);
 		}
@@ -451,7 +441,7 @@ int main()
 		{
 			
 			CountTime += deltatime;
-			//cout << CountTime << endl;
+			cout << CountTime << endl;
 			
 
 			//Spacebar KeyPressed 
@@ -515,6 +505,68 @@ int main()
 				enemySpawnTimer = 0;
 			}
 
+
+			//item movement
+			if (itemSpawnTimer < 30) { itemSpawnTimer++; }
+			if (itemSpawnTimer >= 30)
+			{
+				if (CountTime >= 0 and CountTime <= 185 or CountTime >= 250 and CountTime <= 255)
+				{
+					Fruititem1.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem1.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itembanana.push_back(DropItem(Fruititem1));
+					Fruititem2.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem2.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itemcherry.push_back(DropItem(Fruititem2));
+					Fruititem3.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem3.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itemgrape.push_back(DropItem(Fruititem3));
+					Fruititem4.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem4.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itemwatermelon.push_back(DropItem(Fruititem4));
+				}
+
+				itemSpawnTimer = 0;
+			}
+
+			//erase fruit item
+			for (int i = 0; i < Itembanana.size(); i++)
+			{
+				Itembanana[i].Update(deltatime);
+				if (Itembanana[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itembanana.erase(Itembanana.begin() + i);
+				}
+
+			}
+
+			for (int i = 0; i < Itemcherry.size(); i++)
+			{
+				Itemcherry[i].Update(deltatime);
+				if (Itemcherry[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itemcherry.erase(Itemcherry.begin() + i);
+				}
+
+			}
+
+			for (int i = 0; i < Itemgrape.size(); i++)
+			{
+				Itemgrape[i].Update(deltatime);
+				if (Itemgrape[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itemgrape.erase(Itemgrape.begin() + i);
+				}
+
+			}
+
+			for (int i = 0; i < Itemwatermelon.size(); i++)
+			{
+				Itemwatermelon[i].Update(deltatime);
+				if (Itemwatermelon[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itemwatermelon.erase(Itemwatermelon.begin() + i);
+				}
+
+			}
+
+			//erase enemies
 			for (int i = 0; i < enemies1.size(); i++)
 			{
 				enemies1[i].Update(deltatime, i);
@@ -555,17 +607,8 @@ int main()
 
 			}
 
-			/*for (int i = 0; i < enemies5.size(); i++)
-			{
-				enemies5[i].Update(deltatime);
-				if (enemies5[i].Sprite_enemy1.getPosition().x < -130)
-				{
-					enemies5.erase(enemies5.begin() + i);
-				}
-
-			}*/
-
-			//collistion
+			
+			//collistion bullets vs enemies
 			for (size_t i = 0; i < bullets.size(); i++)
 			{
 				for (size_t j = 0; j < enemies1.size(); j++)
@@ -590,7 +633,7 @@ int main()
 				}
 
 			}
-			/*cout << iscollision << endl;*/
+			
 			for (size_t i = 0; i < bullets.size(); i++)
 			{
 				for (size_t j = 0; j < enemies2.size(); j++)
@@ -697,6 +740,128 @@ int main()
 				}
 			}
 
+			//collistion bullet vs fruit item
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itembanana.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itembanana[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						bullets.erase(bullets.begin() + i);
+						Itembanana.erase(Itembanana.begin() + j);
+						//UI
+						score *= 2;
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itemgrape.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemgrape[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						bullets.erase(bullets.begin() + i);
+						Itemgrape.erase(Itemgrape.begin() + j);
+						//UI
+						score *= 3;
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itemcherry.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemcherry[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						bullets.erase(bullets.begin() + i);
+						Itemcherry.erase(Itemcherry.begin() + j);
+						//UI
+						score *= 5;
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+				}
+
+			}
+
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itemwatermelon.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemwatermelon[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						bullets.erase(bullets.begin() + i);
+						Itemwatermelon.erase(Itemwatermelon.begin() + j);
+						//UI
+						score *= 10;
+						textscore.setString("SCORE : " + to_string(score));
+						break;
+					}
+				}
+
+			}
+
+			//collistion player vs fruit item
+			for (size_t i = 0; i < Itembanana.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itembanana[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itembanana.erase(Itembanana.begin() + i);
+					//UI
+					score *= 2;
+					textscore.setString("SCORE : " + to_string(score));
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < Itemgrape.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itemgrape[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itemgrape.erase(Itemgrape.begin() + i);
+					//UI
+					score *= 3;
+					textscore.setString("SCORE : " + to_string(score));
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < Itemcherry.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itemcherry[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itemcherry.erase(Itemcherry.begin() + i);
+					//UI
+					score *= 5;
+					textscore.setString("SCORE : " + to_string(score));
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < Itemwatermelon.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itemwatermelon[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itemwatermelon.erase(Itemwatermelon.begin() + i);
+					//UI
+					score *= 10;
+					textscore.setString("SCORE : " + to_string(score));
+					break;
+				}
+			}
 
 			//pause menu
 			if (pausemenu.hitbox.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
@@ -720,6 +885,7 @@ int main()
 			Itemshoot_Y.Update(deltatime);
 			Itemshoot_R.Update(deltatime);
 
+
 			//draw
 			window.clear();
 
@@ -736,8 +902,7 @@ int main()
 			player.move(deltatime);
 
 
-			//draw item shoot
-			Itemshoot_G.Draw(window);
+
 
 			//draw bullet
 			for (int i = 0; i < bullets.size(); i++)
@@ -766,6 +931,26 @@ int main()
 				enemies4[i].Draw(window);
 			}
 
+			//draw fruit item
+			for (int i = 0; i < Itembanana.size(); i++)
+			{
+				Itembanana[i].Draw(window);
+			}
+
+			for (int i = 0; i < Itemcherry.size(); i++)
+			{
+				Itemcherry[i].Draw(window);
+			}
+
+			for (int i = 0; i < Itemgrape.size(); i++)
+			{
+				Itemgrape[i].Draw(window);
+			}
+
+			for (int i = 0; i < Itemwatermelon.size(); i++)
+			{
+				Itemwatermelon[i].Draw(window);
+			}
 
 			//draw player
 			player.Draw(window);
@@ -810,6 +995,7 @@ int main()
 			if (blood <= -1)
 			{
 				GameOverstate = 0;
+				
 			}
 
 			if (GameOverstate == 0)
@@ -821,7 +1007,18 @@ int main()
 				gameover.Draw(window);
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
-						Mainmenustate = 1;
+					clock.restart();
+					Player player(sf::Vector2f(0.f, 400.f));
+					enemies1.clear();
+					enemies2.clear();
+					enemies3.clear();
+					enemies4.clear();
+					Itembanana.clear();
+					Itemgrape.clear();
+					Itemcherry.clear();
+					Itemwatermelon.clear();
+					blood = 6;
+					Mainmenustate = 1;
 				}
 		
 			}
