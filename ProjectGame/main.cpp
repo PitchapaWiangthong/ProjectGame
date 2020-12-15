@@ -846,40 +846,40 @@ int main()
 				if (enemySpawnTimer < 50) { enemySpawnTimer++; }
 				if (enemySpawnTimer >= 50)
 				{
-					if(CountTime > 0 and CountTime <= 60 or CountTime >= 200 and CountTime <= 230)
+					if(CountTime > 0 and CountTime <= 60 or CountTime >= 140 and CountTime <= 160)
 					{
 					Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
 					enemies1.push_back(Enemy(Enemymini1));
 					}
-					if (CountTime >= 30 and CountTime <= 90 or CountTime >= 220 and CountTime <= 250)
+					if (CountTime >= 30 and CountTime <= 90 or CountTime >= 150 and CountTime <= 170)
 					{
 						Enemymini2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini2.Sprite_enemy.getSize().y));
 						enemies2.push_back(Enemy(Enemymini2));
 					}
 
-					if (CountTime >= 60 and CountTime <= 120 or CountTime >= 240 and CountTime <= 280)
+					if (CountTime >= 60 and CountTime <= 120 or CountTime >= 160 and CountTime <= 180)
 					{
 						Enemymedium1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium1.Sprite_enemy.getSize().y));
 						enemies3.push_back(Enemy(Enemymedium1));
 					}
 
-					if (CountTime >=  90 and CountTime <= 150 or CountTime >= 300 and CountTime <= 320)
+					if (CountTime >=  90 and CountTime <= 150 or CountTime >= 200 and CountTime <= 250)
 					{
 						Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
 						enemies4.push_back(Enemy(Enemymedium2));
 					}
-					if (CountTime >= 165 and CountTime <= 225 or CountTime >= 280 and CountTime <= 310)
+					if (CountTime >= 165 and CountTime <= 225 or CountTime >= 240 and CountTime <= 280)
 					{
 						/*cout << "de" << endl;*/
 						Enemybig1.Sprite_enemy1.setPosition(1000.f, rand() % 768);
 						enemies5.push_back(Enemy1(Enemybig1));
 					}
-					if (CountTime >= 200 and CountTime <= 250 or CountTime >= 300 and CountTime <= 330)
+					if (CountTime >= 200 and CountTime <= 250 or CountTime >= 250 and CountTime <= 300)
 					{
 						Enemybig2.Sprite_enemy1.setPosition(1000.f, rand() % 768);
 						enemies6.push_back(Enemy1(Enemybig2));
 					}
-					if (CountTime >= 265 and CountTime <= 350)
+					if (CountTime >= 265 and CountTime <= 320)
 					{
 						Enemybigboss.Sprite_enemy1.setPosition(1000.f, rand() % 768);
 						enemies7.push_back(Enemy1(Enemybigboss));
@@ -920,7 +920,7 @@ int main()
 				if (itemSpawnTimer < 30) { itemSpawnTimer++; }
 				if (itemSpawnTimer >= 30)
 				{
-					if (CountTime >= 155 and CountTime <= 165 or CountTime >= 250 and CountTime <= 265 or CountTime >= 350 and CountTime <= 370)
+					if (CountTime >= 155 and CountTime <= 165 or CountTime >= 320 and CountTime <= 340)
 					{
 						Fruititem1.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem1.Sprite_Itemfruit.getSize().x)), 0.f);
 						Itembanana.push_back(DropItem(Fruititem1));
