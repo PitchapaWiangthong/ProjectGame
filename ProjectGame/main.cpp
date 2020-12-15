@@ -19,6 +19,7 @@
 #include "PauseMenu.h"
 #include "Item.h"
 #include "DropItem.h"
+#include "Hitbox.h"
 
 std::vector<std::pair<std::string, int>> vec;
 bool sortbysecdesc(const std::pair<std::string, int>& a, const std::pair<std::string, int>& b);
@@ -177,6 +178,10 @@ int main()
 	Enemy Enemymedium2(&enemyMediumPink);
 	vector<Enemy> enemies4;
 	
+	sf::Texture enemyBigPurWhite;
+	enemyBigPurWhite.loadFromFile("enemy/bigg.png");
+	Enemy1 Enemybig1(enemyBigPurWhite, sf::Vector2i(1, 2));
+	vector<Enemy1> enemies5;
 
 
 //heart
@@ -247,6 +252,15 @@ int main()
 	name.setCharacterSize(80);
 	sf::String nameplayer;
 
+//story
+	sf::Text story;
+	story.setFont(font);
+	story.setString("Players in the role of a flying craft must fight against incoming enemy flying machines and in order not to be attacked, must only shoot, shoot and shoot.");
+	story.setFillColor(sf::Color::Yellow);
+	story.setOutlineColor(sf::Color::Blue);
+	story.setOutlineThickness(5);
+	story.setPosition(100, 100);
+
 
 //over whelm
 	sf::Texture over;
@@ -296,7 +310,15 @@ int main()
 	textscore.setCharacterSize(40);
 
 //high score
-	
+	sf::Text HighScoreText;
+	HighScoreText.setFont(font);
+	HighScoreText.setFillColor(sf::Color::Black);
+	HighScoreText.setString("HIGH SCORE : ");
+	HighScoreText.setCharacterSize(50);
+	HighScoreText.setPosition(300, 300);
+
+//hitbox
+	/*Hitbox hitbox_player(player.Sprite_ship,0,0,40,70);*/
 
 	
 
@@ -323,7 +345,7 @@ int main()
 			window.close();
 		if (Mainmenustate == 1  or Pausemenustate == 1)
 		{
-
+			window.clear();
 			GameOverstate = 1;
 
 			//draw background menu state
@@ -353,7 +375,7 @@ int main()
 				{
 					Mainmenustate = 0;
 					startmusic.pause();
-					level1.play();
+					/*level1.play();*/
 				}
 			}
 			else
@@ -423,7 +445,7 @@ int main()
 		if (Mainmenustate == 3)
 		{
 			GameOverstate = 1;
-
+			window.clear();
 			//draw background menu state
 
 			for (Background& background : backgrounds)
@@ -443,7 +465,6 @@ int main()
 			window.draw(showwhelm);
 
 			//hitbox
-
 			if (mainmenu.hitbox[0].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
 				mainmenu.mainMenu[0].setFillColor(sf::Color::Blue);
@@ -451,6 +472,7 @@ int main()
 
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 				{
+					
 					Namestate = 1;
 					startmusic.stop();
 					level1.play();
@@ -522,6 +544,7 @@ int main()
 		
 		if (Namestate == 1)
 		{
+			window.clear();
 			for (Background& background : backgrounds)
 				background.Update(deltatime);
 			for (Background& background : backgrounds)
@@ -529,7 +552,12 @@ int main()
 				background.Draw(window);
 			}
 
-
+			window.draw(story);
+			story.move(-2, 0);
+			if (story.getPosition().x < -1700)
+			{
+				story.setPosition(1000, 100);
+			}
 			if (event.type == sf::Event::TextEntered and debounce < clock2.getElapsedTime().asSeconds())
 			{
 
@@ -659,8 +687,11 @@ int main()
 					Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
 					enemies4.push_back(Enemy(Enemymedium2));
 				}
-				
-
+				if (CountTime >= 0/*165*/ and CountTime <= 225)
+				{
+					Enemybig1.Sprite_enemy1.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemybig1.Sprite_enemy1.getSize().y));
+					enemies5.push_back(Enemy1(Enemybig1));
+				}
 				enemySpawnTimer = 0;
 			}
 
@@ -669,7 +700,7 @@ int main()
 			if (itemSpawnTimer < 30) { itemSpawnTimer++; }
 			if (itemSpawnTimer >= 30)
 			{
-				if (CountTime >= 155 and CountTime <= 165 or CountTime >= 220 and CountTime <= 230)
+				if (CountTime >= 155 and CountTime <= 165 or CountTime >= 225 and CountTime <= 235)
 				{
 					Fruititem1.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem1.Sprite_Itemfruit.getSize().x)), 0.f);
 					Itembanana.push_back(DropItem(Fruititem1));
@@ -774,6 +805,16 @@ int main()
 
 			}
 
+			for (int i = 0; i < enemies5.size(); i++)
+			{
+				enemies5[i].Update(deltatime);
+				if (enemies5[i].Sprite_enemy1.getPosition().x < -130)
+				{
+					enemies5.erase(enemies5.begin() + i);
+					break;
+				}
+
+			}
 			
 			//collistion bullets vs enemies
 			for (size_t i = 0; i < bullets.size(); i++)
@@ -867,7 +908,29 @@ int main()
 
 			}
 
-			
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies5.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies5[j].Sprite_enemy1.getGlobalBounds()))
+					{
+						iscollision++;
+						enemies5[j].bloodenemybig--;
+						if (enemies5[j].bloodenemybig == 0)
+						{
+							score += 30;
+							enemies5.erase(enemies5.begin() + j);
+
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						break;
+					}
+				}
+
+			}
 
 			//collistion player vs enemy
 			for (size_t i = 0; i < enemies1.size(); i++)
@@ -905,6 +968,16 @@ int main()
 				if (player.Sprite_ship.getGlobalBounds().intersects(enemies4[i].Sprite_enemy.getGlobalBounds()))
 				{
 					enemies4.erase(enemies4.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < enemies5.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds()))
+				{
+					enemies5.erase(enemies5.begin() + i);
 					blood -= 1;
 					break;
 				}
@@ -1108,6 +1181,11 @@ int main()
 				enemies4[i].Draw(window);
 			}
 
+			for (int i = 0; i < enemies5.size(); i++)
+			{
+				enemies5[i].Draw(window);
+			}
+
 			//draw fruit item
 			for (int i = 0; i < Itembanana.size(); i++)
 			{
@@ -1171,6 +1249,7 @@ int main()
 			//game over
 			if (blood <= -1)
 			{
+				window.clear();
 				GameOverstate = 0;
 				
 			}
@@ -1186,7 +1265,10 @@ int main()
 				startmusic.play();
 
 				gameover.Draw(window);
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+				
+				
+
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 				{
 					CountTime = 0;
 					player.Sprite_ship.setPosition(0, 400);

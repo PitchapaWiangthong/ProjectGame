@@ -13,7 +13,7 @@ Gameover::Gameover(float width, float height)
 	//high score
 	HighScoreText.setFont(font);
 	HighScoreText.setFillColor(sf::Color::Black);
-	HighScoreText.setString("HIGH SCORE : 2340315");
+	HighScoreText.setString("HIGH SCORE : ");
 	HighScoreText.setCharacterSize(50);
 	HighScoreText.setPosition(300, 300);
 
