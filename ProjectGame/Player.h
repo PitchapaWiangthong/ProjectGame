@@ -18,6 +18,7 @@ public:
 
 	float dx = 0;
 	float dy = 0;
+	float BulletTime = 0;
 
 private:
 	sf::Texture Texture_shipplayer;

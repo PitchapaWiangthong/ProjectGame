@@ -55,14 +55,10 @@ void Enemy::Update(float deltatime , int i)
 void Enemy::Draw(sf::RenderWindow& window)
 {
 	window.draw(Sprite_enemy);
-	for(int i = 0;i<10;i++)
+	/*for(int i = 0;i<10;i++)
 	{
 		window.draw(hitbox[i]);
-	}
+	}*/
 	
 }
 
-void Enemy::move(float deltatime)
-{
-
-}

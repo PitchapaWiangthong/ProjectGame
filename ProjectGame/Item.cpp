@@ -19,8 +19,9 @@ Item::Item(sf::Texture& texture , const sf::Vector2i &row_colum , float startTim
 
 Item::~Item() { }
 
-void Item::Update(const float& deltaTime)
+void Item::Update(const float &deltaTime)
 {
+	lifetime -= deltaTime;
 	this->Sprite_item.setTextureRect(sf::IntRect(currentframe.x * 0, currentframe.y * i, currentframe.x, currentframe.y));
 	this->offsetanimation += deltaTime;
 	if (offsetanimation > 0.2)
@@ -32,6 +33,7 @@ void Item::Update(const float& deltaTime)
 	{
 		i = 0;
 	}
+
 }
 
 void Item::Draw(sf::RenderWindow& window)

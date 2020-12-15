@@ -13,7 +13,7 @@ public:
 
 	void Update(float deltatime , int i);
 	void Draw(sf::RenderWindow& window);
-	void move(float deltatime);
+	
 	
 	int bloodenemymedium = 2;
 	float dx = 0;

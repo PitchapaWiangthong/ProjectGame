@@ -3,17 +3,19 @@
 class Enemy1
 {
 public:
-	sf::RectangleShape Sprite_enemy1;
+	sf::Sprite Sprite_enemy1;
+	sf::RectangleShape hitbox[10];
 	sf::Vector2f enemy1position;
 	sf::Vector2f movement;
 
 	Enemy1(sf::Texture& texture, const sf::Vector2i& row_colum);
 	~Enemy1();
-	void Update(const float& deltaTime);
+	void Update(const float &deltaTime);
 	void Draw(sf::RenderWindow& window);
 	void Move(float deltaTime);
 
 	int bloodenemybig = 4;
+	int bloodenemybigboss = 7;
 	float dx = 0;
 	float dy = 0;
 

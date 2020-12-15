@@ -16,6 +16,7 @@ public:
 	float startTime = 0;
 	float dx = 0;
 	float dy = 0;
+	float lifetime = 10;
 
 private:
 	float offsetanimation = 0;
