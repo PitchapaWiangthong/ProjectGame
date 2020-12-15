@@ -236,15 +236,14 @@ int main()
 //itemshoot
 	sf::Texture itemGreen;
 	itemGreen.loadFromFile("item/itemshootgreen.png");
-	Item Itemshoot_G(itemGreen , sf::Vector2i( 1 , 7));
 	vector<Item> Item1;
 	sf::Texture itemYellow;
 	itemYellow.loadFromFile("item/itemshootyellow.png");
-	Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7));
+	/*Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7));*/
 	vector<Item> Item2;
 	sf::Texture itemRed;
 	itemRed.loadFromFile("item/itemshootred.png");
-	Item Itemshoot_R(itemRed, sf::Vector2i(1, 7));
+	/*Item Itemshoot_R(itemRed, sf::Vector2i(1, 7));*/
 	vector<Item> Item3;
 
 //name 
@@ -679,8 +678,6 @@ int main()
 
 	Score:
 
-		
-
 		while (window.isOpen())
 		{
 			deltatime = clock.restart().asSeconds();
@@ -771,7 +768,7 @@ int main()
 
 
 				CountTime += deltatime;
-				cout << CountTime << endl;
+				/*cout << CountTime << endl;*/
 				
 
 				//hitbox player
@@ -844,6 +841,17 @@ int main()
 					}
 					enemySpawnTimer = 0;
 				}
+				
+				if (Item1.size() != 0 )
+				{
+					cout << Item1[0].startTime << " " << deltatime << endl;
+					if ((CountTime - (Item1[0].startTime)) >= 10)
+					{
+						Item1.erase(Item1.begin());
+					}
+					
+				}
+
 
 				//fruit item movement
 				if (itemSpawnTimer < 30) { itemSpawnTimer++; }
@@ -973,6 +981,7 @@ int main()
 						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].hitbox[0].getGlobalBounds()))
 						{
 							iscollision++;
+							/*printf("%d", iscollision);*/
 							score += 10;
 							//UI
 							textscore.setString("SCORE : " + to_string(score));
@@ -980,11 +989,11 @@ int main()
 							enemies1.erase(enemies1.begin() + j);
 							break;
 						}
-						if (iscollision % 10 == 0)
+						if (iscollision == 3)
 						{
-							/*Itemshoot_G.Sprite_item.setPosition(window.getSize().x, rand() % int(window.getSize().y - itemGreen.getSize().y));
+							Item Itemshoot_G(itemGreen, sf::Vector2i(1, 7),CountTime);
 							Item1.push_back(Item(Itemshoot_G));
-							Itemshoot_G.Draw(window);*/
+							iscollision = 0;
 						}
 					}
 
@@ -1285,11 +1294,6 @@ int main()
 					blood = 100;
 				}
 
-				//animation update
-				Itemshoot_G.Update(deltatime);
-				Itemshoot_Y.Update(deltatime);
-				Itemshoot_R.Update(deltatime);
-
 
 				//draw
 				window.clear();
@@ -1306,9 +1310,6 @@ int main()
 				player.Update();
 				player.move(deltatime);
 
-
-				//draw item shoot
-				Itemshoot_G.Draw(window);
 
 				//draw bullet
 				for (int i = 0; i < bullets.size(); i++)
@@ -1363,17 +1364,20 @@ int main()
 					Itemwatermelon[i].Draw(window);
 				}
 
+				
 				//draw player
 				player.Draw(window);
 
 				//draw hitbox player
 				window.draw(hitbox_player1);
 				window.draw(hitbox_player2);
-
-				//draw hitbox enemies
-
-				/*window.draw(hitbox_enemies1);*/
 			
+				//draw item shoot
+				for (int i = 0; i < Item1.size(); i++)
+				{
+					Item1[i].Update(deltatime);
+					Item1[i].Draw(window);
+				}
 
 				//draw text
 				window.draw(textscore);

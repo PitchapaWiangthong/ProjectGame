@@ -7,12 +7,13 @@ public:
 	sf::Vector2f itemposition;
 	sf::Vector2f movement;
 
-	Item(sf::Texture& texture, const sf::Vector2i &row_colum);
+	Item(sf::Texture& texture, const sf::Vector2i &row_colum, float startTime);
 	~Item();
 	void Update(const float &deltaTime);
 	void Draw(sf::RenderWindow& window);
 	void move(float deltaTime);
 
+	float startTime = 0;
 	float dx = 0;
 	float dy = 0;
 
