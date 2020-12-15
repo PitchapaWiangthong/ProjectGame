@@ -27,7 +27,7 @@ void Background::Update(float deltatime)
 		position = body[i].getPosition();
 		/*cout << -size.x << position.x <<endl;*/
 		
-		if (position.x -5 < (-size.x) && speed < 0)
+		if (position.x -10 < (-size.x) && speed < 0)
 			body[i].setPosition(size.x, position.y);
 		body[i].move(speed*deltatime, 0);
 	}

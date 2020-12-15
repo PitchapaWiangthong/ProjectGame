@@ -1460,7 +1460,8 @@ int main()
 				//collistion player vs itemshoot
 				for (size_t i = 0; i < Item1.size(); i++)
 				{
-					if (player.Sprite_ship.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds()))
+					if (hitbox_player1.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds())
+						or hitbox_player2.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds()))
 					{
 						player.BulletTime = CountTime;
 						itemplay = 1;
@@ -1489,7 +1490,8 @@ int main()
 
 				for (size_t i = 0; i < Item2.size(); i++)
 				{
-					if (player.Sprite_ship.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds()))
+					if (hitbox_player1.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds())
+						or hitbox_player2.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds()))
 					{
 						player.BulletTime = CountTime;
 						itemplay = 2;
@@ -1520,7 +1522,8 @@ int main()
 
 				for (size_t i = 0; i < Item3.size(); i++)
 				{
-					if (player.Sprite_ship.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds()))
+					if (hitbox_player1.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds())
+						or hitbox_player2.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds()))
 					{
 						player.BulletTime = CountTime;
 						itemplay = 3;
