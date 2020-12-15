@@ -19,7 +19,7 @@
 #include "PauseMenu.h"
 #include "Item.h"
 #include "DropItem.h"
-#include "Hitbox.h"
+
 
 std::vector<std::pair<std::string, int>> vec;
 bool sortbysecdesc(const std::pair<std::string, int>& a, const std::pair<std::string, int>& b);
@@ -31,7 +31,7 @@ int main()
 	//window
 	sf::RenderWindow window(sf::VideoMode(1000, 768), "OverWhelm!", sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
-	sf::Clock clock,clock2;
+	sf::Clock clock,clock2,clock3;
 	
 
 	//variable
@@ -317,10 +317,32 @@ int main()
 	HighScoreText.setCharacterSize(50);
 	HighScoreText.setPosition(300, 300);
 
-//hitbox
-	/*Hitbox hitbox_player(player.Sprite_ship,0,0,40,70);*/
 
-	
+//hitbox player
+	sf::RectangleShape hitbox_player1;
+	hitbox_player1.setOrigin(hitbox_player1.getGlobalBounds().width / 2, hitbox_player1.getGlobalBounds().height / 2);
+	hitbox_player1.setFillColor(sf::Color::Transparent);
+	hitbox_player1.setOutlineThickness(1.f);
+	hitbox_player1.setOutlineColor(sf::Color::Green);
+	hitbox_player1.setSize(sf::Vector2f(60.f, 50.f));
+	hitbox_player1.setPosition(player.Sprite_ship.getPosition().x + 15, player.Sprite_ship.getPosition().y + 35);
+
+	sf::RectangleShape hitbox_player2;
+	hitbox_player2.setOrigin(hitbox_player2.getGlobalBounds().width / 2, hitbox_player2.getGlobalBounds().height / 2);
+	hitbox_player2.setFillColor(sf::Color::Transparent);
+	hitbox_player2.setOutlineThickness(1.f);
+	hitbox_player2.setOutlineColor(sf::Color::Green);
+	hitbox_player2.setSize(sf::Vector2f(120.f, 40.f));
+	hitbox_player2.setPosition(player.Sprite_ship.getPosition().x + 10, player.Sprite_ship.getPosition().y + 63);
+
+//hitbox enemies
+	/*sf::RectangleShape hitbox_enemies1;
+	hitbox_enemies1.setOrigin(hitbox_enemies1.getGlobalBounds().width / 2, hitbox_enemies1.getGlobalBounds().height / 2);
+	hitbox_enemies1.setFillColor(sf::Color::Transparent);
+	hitbox_enemies1.setOutlineThickness(1.f);
+	hitbox_enemies1.setOutlineColor(sf::Color::Green);
+	hitbox_enemies1.setSize(sf::Vector2f(100.f, 100.f));
+	hitbox_enemies1.setPosition(enemies1[1].Sprite_enemy.getPosition().x, enemies1[1].Sprite_enemy.getPosition().y);*/
 
 //gameover
 	Gameover gameover(600, 600);
@@ -365,7 +387,6 @@ int main()
 			window.draw(showwhelm);
 
 			//hitbox
-	
 			if (mainmenu.hitbox[0].getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
 					mainmenu.mainMenu[0].setFillColor(sf::Color::Blue);
@@ -630,6 +651,12 @@ int main()
 			cout << CountTime << endl;
 			
 
+			//hitbox player
+			hitbox_player1.setPosition(player.Sprite_ship.getPosition().x + 15, player.Sprite_ship.getPosition().y + 35);
+			hitbox_player2.setPosition(player.Sprite_ship.getPosition().x + 10, player.Sprite_ship.getPosition().y + 63);
+
+			
+
 			//Spacebar KeyPressed 
 			if (firerate < 20) { firerate++; }
 			if (firerate >= 20)
@@ -682,19 +709,18 @@ int main()
 					enemies3.push_back(Enemy(Enemymedium1));
 				}
 
-				if (CountTime >= 90 and CountTime <= 150)
+				if (CountTime >= /*0*/ 90 and CountTime <= 150)
 				{
 					Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
 					enemies4.push_back(Enemy(Enemymedium2));
 				}
-				if (CountTime >= 0/*165*/ and CountTime <= 225)
+				if (CountTime >= /*0*/165 and CountTime <= 225)
 				{
 					Enemybig1.Sprite_enemy1.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemybig1.Sprite_enemy1.getSize().y));
 					enemies5.push_back(Enemy1(Enemybig1));
 				}
 				enemySpawnTimer = 0;
 			}
-
 
 			//fruit item movement
 			if (itemSpawnTimer < 30) { itemSpawnTimer++; }
@@ -821,7 +847,7 @@ int main()
 			{
 				for (size_t j = 0; j < enemies1.size(); j++)
 				{
-					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].Sprite_enemy.getGlobalBounds()))
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].hitbox[0].getGlobalBounds()))
 					{
 						iscollision++;
 						score += 10;
@@ -845,7 +871,7 @@ int main()
 			{
 				for (size_t j = 0; j < enemies2.size(); j++)
 				{
-					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].Sprite_enemy.getGlobalBounds()))
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].hitbox[0].getGlobalBounds()))
 					{
 						iscollision++;
 						score += 10;
@@ -866,7 +892,7 @@ int main()
 				for (size_t j = 0; j < enemies3.size(); j++)
 				{
 					
-					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].Sprite_enemy.getGlobalBounds()))
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].hitbox[1].getGlobalBounds()))
 					{
 						iscollision++;
 						enemies3[j].bloodenemymedium--;
@@ -889,7 +915,7 @@ int main()
 				for (size_t j = 0; j < enemies4.size(); j++)
 				{
 
-					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies4[j].Sprite_enemy.getGlobalBounds()))
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies4[j].hitbox[2].getGlobalBounds()))
 					{
 						iscollision++;
 						enemies4[j].bloodenemymedium--;
@@ -935,7 +961,8 @@ int main()
 			//collistion player vs enemy
 			for (size_t i = 0; i < enemies1.size(); i++)
 			{
-				if (player.Sprite_ship.getGlobalBounds().intersects(enemies1[i].Sprite_enemy.getGlobalBounds()))
+				if (hitbox_player1.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds()) 
+					or hitbox_player2.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds()))
 				{
 					enemies1.erase(enemies1.begin() + i);
 					blood -= 1;
@@ -945,7 +972,8 @@ int main()
 
 			for (size_t i = 0; i < enemies2.size(); i++)
 			{
-				if (player.Sprite_ship.getGlobalBounds().intersects(enemies2[i].Sprite_enemy.getGlobalBounds()))
+				if (hitbox_player1.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds()))
 				{
 					enemies2.erase(enemies2.begin() + i);
 					blood -= 1;
@@ -955,7 +983,8 @@ int main()
 
 			for (size_t i = 0; i < enemies3.size(); i++)
 			{
-				if (player.Sprite_ship.getGlobalBounds().intersects(enemies3[i].Sprite_enemy.getGlobalBounds()))
+				if (hitbox_player1.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds()))
 				{
 					enemies3.erase(enemies3.begin() + i);
 					blood -= 1;
@@ -965,7 +994,8 @@ int main()
 
 			for (size_t i = 0; i < enemies4.size(); i++)
 			{
-				if (player.Sprite_ship.getGlobalBounds().intersects(enemies4[i].Sprite_enemy.getGlobalBounds()))
+				if (hitbox_player1.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds()) 
+					or hitbox_player2.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds()))
 				{
 					enemies4.erase(enemies4.begin() + i);
 					blood -= 1;
@@ -1130,6 +1160,13 @@ int main()
 				Namestate = 0;
 			}
 
+			//hack
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::U) and debounce < clock3.getElapsedTime().asSeconds())
+			{
+				debounce = clock3.getElapsedTime().asSeconds() + 5;
+				blood = 100;
+			}
+
 			//animation update
 			Itemshoot_G.Update(deltatime);
 			Itemshoot_Y.Update(deltatime);
@@ -1210,6 +1247,15 @@ int main()
 			//draw player
 			player.Draw(window);
 
+			//draw hitbox player
+			window.draw(hitbox_player1);
+			window.draw(hitbox_player2);
+
+			//draw hitbox enemies
+
+			/*window.draw(hitbox_enemies1);*/
+		
+
 			//draw text
 			window.draw(textscore);
 
@@ -1217,7 +1263,7 @@ int main()
 			pausemenu.Draw(window);
 
 			//draw heart
-			if (blood == 6)
+			if (blood >= 6)
 			{
 				window.draw(bloodfull);
 			}

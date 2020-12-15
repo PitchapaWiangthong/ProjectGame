@@ -151,7 +151,6 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Enemy1.cpp" />
     <ClCompile Include="Gameover.cpp" />
-    <ClCompile Include="Hitbox.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mainmenu.cpp" />
@@ -165,7 +164,6 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Enemy1.h" />
     <ClInclude Include="Gameover.h" />
-    <ClInclude Include="Hitbox.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Mainmenu.h" />
     <ClInclude Include="PauseMenu.h" />

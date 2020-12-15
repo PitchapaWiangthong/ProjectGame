@@ -4,6 +4,7 @@ class Enemy
 {
 public:
 	sf::RectangleShape Sprite_enemy;
+	sf::RectangleShape hitbox[10];
 	sf::Vector2f enemyposition;
 	sf::Vector2f movement;
 
