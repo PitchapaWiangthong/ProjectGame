@@ -32,7 +32,7 @@ using namespace std;
 int main()
 {
 	//window
-	sf::RenderWindow window(sf::VideoMode(1000, 768), "OverWhelm!", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(1000, 768), "OverWhelm! | 63010679", sf::Style::Titlebar | sf::Style::Close);
 	window.setFramerateLimit(60);
 	sf::Clock clock,clock2,clock3;
 	
@@ -183,7 +183,6 @@ int main()
 	enemyMediumOrange.loadFromFile("enemy/medium1.png");
 	Enemy Enemymedium1(&enemyMediumOrange);
 	vector<Enemy> enemies3;
-
 	sf::Texture enemyMediumPink;
 	enemyMediumPink.loadFromFile("enemy/medium2.png");
 	Enemy Enemymedium2(&enemyMediumPink);
@@ -1235,7 +1234,7 @@ int main()
 							enemies7[j].bloodenemybigboss--;
 							if (enemies7[j].bloodenemybigboss == 0)
 							{
-								score += 50;
+								score += 100;
 								enemies7.erase(enemies7.begin() + j);
 
 							}
