@@ -10,12 +10,7 @@ Gameover::Gameover(float width, float height)
 	GameOverText.setString("GAME OVER");
 	GameOverText.setCharacterSize(80);
 	GameOverText.setPosition(350, 192);
-	//high score
-	HighScoreText.setFont(font);
-	HighScoreText.setFillColor(sf::Color::Black);
-	HighScoreText.setString("HIGH SCORE : ");
-	HighScoreText.setCharacterSize(50);
-	HighScoreText.setPosition(300, 300);
+
 
 	
 

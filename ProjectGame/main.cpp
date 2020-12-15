@@ -45,6 +45,7 @@ int main()
 	int itemSpawnTimer = 0;
 	int CountBulletEnemymini = 0;
 	long long int score = 0;
+	int cnt = 0;
 	int blood = 6;
 	int counter = 0;
 	int iscollision = 0;
@@ -286,9 +287,9 @@ int main()
 	scoreboard.setString("SCOREBOARD");
 	scoreboard.setFillColor(sf::Color::White);
 	scoreboard.setCharacterSize(50);
-	scoreboard.setPosition(360, 200);
+	scoreboard.setPosition(380, 200);
 
-	vector<pair<string,int>> ScoreBoard;
+	vector<pair<int,string>> ScoreBoard;
 
 //over whelm
 	sf::Texture over;
@@ -342,10 +343,16 @@ int main()
 	sf::Text HighScoreText;
 	HighScoreText.setFont(font);
 	HighScoreText.setFillColor(sf::Color::Black);
-	HighScoreText.setString("HIGH SCORE : ");
 	HighScoreText.setCharacterSize(50);
 	HighScoreText.setPosition(300, 300);
 
+	sf::Text hname, hscore;
+	hscore.setFont(font);
+	hscore.setCharacterSize(40);
+	hscore.setFillColor(sf::Color::White);
+	hname.setFont(font);
+	hname.setCharacterSize(40);
+	hname.setFillColor(sf::Color::White);
 
 //hitbox player
 	sf::RectangleShape hitbox_player1;
@@ -403,6 +410,7 @@ int main()
 					break;
 				}
 			}
+
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 				window.close();
@@ -530,7 +538,7 @@ int main()
 			window.draw(story);
 			story.move(-5, 0);
 
-			if (story.getPosition().x < -5500)
+			if (story.getPosition().x < -6000)
 			{
 				story.setPosition(1000, 300);
 			}
@@ -670,6 +678,9 @@ int main()
 		}
 
 	Score:
+
+		
+
 		while (window.isOpen())
 		{
 			deltatime = clock.restart().asSeconds();
@@ -685,6 +696,24 @@ int main()
 					break;
 				}
 			}
+			//read files
+			ScoreBoard.clear();
+
+			ifstream loadFile;
+			loadFile.open("score/Score.txt");
+			while (!loadFile.eof())
+			{
+				string tempName;
+				int tempScore;
+				loadFile >> tempName >> tempScore;
+				//cout << tempName << " " << tempScore << endl;
+				ScoreBoard.push_back({ tempScore,tempName });
+
+			}
+			loadFile.close();
+
+			sort(ScoreBoard.begin(), ScoreBoard.end(), greater<pair< int, string>>());
+
 			for (Background& background : backgrounds)
 				background.Update(deltatime);
 			for (Background& background : backgrounds)
@@ -698,10 +727,28 @@ int main()
 					goto Main;
 				}
 			}
+			
 
-			window.draw(board);
-			window.draw(scoreboard);
-			window.display();
+				
+				window.draw(board);
+			cnt = 0;
+				for (vector<pair<int, string>>::iterator k = ScoreBoard.begin(); k != ScoreBoard.end(); ++k)
+				{
+						++cnt;
+						if (cnt > 5)
+							break;
+						cout << cnt << endl;
+						hscore.setPosition(300, 250 + (50 * cnt));
+						hname.setPosition(600, 250 + (50 * cnt));
+						hscore.setString(to_string(k->first));
+						hname.setString(k->second);
+						window.draw(hscore);
+					
+						window.draw(hname);
+				}
+			
+					window.draw(scoreboard);
+					window.display();
 		}
 
 
@@ -790,7 +837,7 @@ int main()
 						Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
 						enemies4.push_back(Enemy(Enemymedium2));
 					}
-					if (CountTime >= /*0*/165 and CountTime <= 225)
+					if (CountTime >= 0/*165*/ and CountTime <= 225)
 					{
 						Enemybig1.Sprite_enemy1.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemybig1.Sprite_enemy1.getSize().y));
 						enemies5.push_back(Enemy1(Enemybig1));
@@ -1260,7 +1307,8 @@ int main()
 				player.move(deltatime);
 
 
-
+				//draw item shoot
+				Itemshoot_G.Draw(window);
 
 				//draw bullet
 				for (int i = 0; i < bullets.size(); i++)
@@ -1364,9 +1412,37 @@ int main()
 				}
 
 				//game over
-				if (blood <= -1)
+				if (blood <= 0)
 				{
+					//write files
+					string name;
+					name = nameplayer;
+					ofstream highscore;
+					highscore.open("score/Score.txt", ios::out | ios::app);
+					highscore << "\n" << name << " " << score;
+					highscore.close();
+
+					//read files
+					ScoreBoard.clear();
+
+					ifstream loadFile;
+					loadFile.open("score/Score.txt");
+					while (!loadFile.eof()) {
+						string tempName;
+						int tempScore;
+						loadFile >> tempName >> tempScore;
+						cout << tempName << " " << tempScore << endl;
+						ScoreBoard.push_back({ tempScore,tempName });
+					}
+					loadFile.close();
+
+					sort(ScoreBoard.begin(), ScoreBoard.end(), greater<pair< int,string>>());
+					cout << ScoreBoard.data();
+					vector<pair<int,string >>::iterator k = ScoreBoard.begin();
+					HighScoreText.setString("HIGH SCORE : " + to_string(k->first));
+
 					window.clear();
+
 					goto Gameover;
 					
 				}
@@ -1456,17 +1532,12 @@ int main()
 					startmusic.play();
 
 					gameover.Draw(window);
-
-					string name;
-					name = nameplayer;
-					ofstream highscore;
-					highscore.open("score/Score.txt", ios::out | ios::app);
-					highscore << "\n" << name << " " << score;
-					highscore.close();
-
+					window.draw(HighScoreText);
 
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 					{
+						
+						
 						CountTime = 0;
 						player.Sprite_ship.setPosition(0, 400);
 						enemies1.clear();
@@ -1484,6 +1555,7 @@ int main()
 						goto Main;
 					}
 
+				
 					window.display();
 				}
 
