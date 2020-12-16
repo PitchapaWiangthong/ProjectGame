@@ -1258,7 +1258,7 @@ int main()
 						bullets.erase(bullets.begin() + i);
 						break;
 					}
-					if (iscollision == 5)
+					if (iscollision == 2)
 					{
 						Item Itemshoot_R(itemRed, sf::Vector2i(1, 7), CountTime);
 						Item1.push_back(Item(Itemshoot_R));
