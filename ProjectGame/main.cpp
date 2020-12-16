@@ -287,7 +287,7 @@ int main()
 //story
 	sf::Text story;
 	story.setFont(font);
-	story.setString("Players in the role of a flying craft must fight against incoming enemy flying machines&&in order not to be attacked, must only shoot, shoot&&shoot.");
+	story.setString("Players in the role of a flying craft must fight against incoming enemy flying machines and in order not to be attacked, must only shoot, shoot and shoot.");
 	story.setFillColor(sf::Color::Yellow);
 	story.setOutlineColor(sf::Color::Blue);
 	story.setOutlineThickness(5);
