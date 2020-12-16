@@ -48,7 +48,7 @@ int main()
 	int cnt = 0;
 	int blood = 6;
 	int counter = 0;
-	int iscollision[7] = {0,0,0,0,0,0,0};
+	int iscollision = 0;
 	int timeItem = 20;
 	bool flag[10];
 		for (size_t i = 0; i <= 9; i++)
@@ -130,7 +130,7 @@ int main()
 
 //bulletItems
 	sf::Texture bulletR;
-	bulletR.loadFromFile("bullet/bulletRed.png");
+	bulletR.loadFromFile("bullet/bulletRed2.png");
 	Bullet Bulletred(&bulletR);
 	Bulletred.Sprite_bullet.setScale(0.8, 0.8);
 	
@@ -811,23 +811,25 @@ int main()
 
 
 
-			//Spacebar KeyPressed 
-			if (firerate < 20) { firerate++; }
-			if (firerate >= 20)
-			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			//Spacebar KeyPressed
+			if (itemplay == 0) {
+				if (firerate < 20) { firerate++; }
+				if (firerate >= 20)
 				{
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+					{
 
-					Bulletblue.Sprite_bullet.setPosition
-					(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
-						player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
-					soundbullet.play();
-					bullets.push_back(Bullet(Bulletblue));
+						Bulletblue.Sprite_bullet.setPosition
+						(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
+							player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
+						soundbullet.play();
+						bullets.push_back(Bullet(Bulletblue));
+
+					}
+
+					firerate = 0;
 
 				}
-
-				firerate = 0;
-
 			}
 
 			//bullets movement
@@ -846,40 +848,40 @@ int main()
 			if (enemySpawnTimer < 50) { enemySpawnTimer++; }
 			if (enemySpawnTimer >= 50)
 			{
-				if (CountTime > 0&&CountTime <= 60||CountTime >= 140&&CountTime <= 160)
+				if (CountTime > 0 && CountTime <= 60 || CountTime >= 140 && CountTime <= 160)
 				{
 					Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
 					enemies1.push_back(Enemy(Enemymini1));
 				}
-				if (CountTime >= 30&&CountTime <= 90||CountTime >= 150&&CountTime <= 170)
+				if (CountTime >= 30 && CountTime <= 90 || CountTime >= 150 && CountTime <= 170)
 				{
 					Enemymini2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini2.Sprite_enemy.getSize().y));
 					enemies2.push_back(Enemy(Enemymini2));
 				}
 
-				if (CountTime >= 60&&CountTime <= 120||CountTime >= 160&&CountTime <= 180)
+				if (CountTime >= 60 && CountTime <= 120 || CountTime >= 160 && CountTime <= 180)
 				{
 					Enemymedium1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium1.Sprite_enemy.getSize().y));
 					enemies3.push_back(Enemy(Enemymedium1));
 				}
 
-				if (CountTime >= 90&&CountTime <= 150||CountTime >= 200&&CountTime <= 250)
+				if (CountTime >= 90 && CountTime <= 150 || CountTime >= 200 && CountTime <= 250)
 				{
 					Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
 					enemies4.push_back(Enemy(Enemymedium2));
 				}
-				if (CountTime >= 165&&CountTime <= 225||CountTime >= 240&&CountTime <= 280)
+				if (CountTime >= 165 && CountTime <= 225 || CountTime >= 240 && CountTime <= 280)
 				{
 					/*cout << "de" << endl;*/
 					Enemybig1.Sprite_enemy1.setPosition(1000.f, rand() % 768);
 					enemies5.push_back(Enemy1(Enemybig1));
 				}
-				if (CountTime >= 200&&CountTime <= 250||CountTime >= 250&&CountTime <= 300)
+				if (CountTime >= 200 && CountTime <= 250 || CountTime >= 250 && CountTime <= 300)
 				{
 					Enemybig2.Sprite_enemy1.setPosition(1000.f, rand() % 768);
 					enemies6.push_back(Enemy1(Enemybig2));
 				}
-				if (CountTime >= 265&&CountTime <= 320)
+				if (CountTime >= 265 && CountTime <= 320)
 				{
 					Enemybigboss.Sprite_enemy1.setPosition(1000.f, rand() % 768);
 					enemies7.push_back(Enemy1(Enemybigboss));
@@ -920,7 +922,7 @@ int main()
 			if (itemSpawnTimer < 30) { itemSpawnTimer++; }
 			if (itemSpawnTimer >= 30)
 			{
-				if (CountTime >= 155&&CountTime <= 165||CountTime >= 320&&CountTime <= 340)
+				if (CountTime >= 155 && CountTime <= 165 || CountTime >= 320 && CountTime <= 340)
 				{
 					Fruititem1.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem1.Sprite_Itemfruit.getSize().x)), 0.f);
 					Itembanana.push_back(DropItem(Fruititem1));
@@ -1065,7 +1067,7 @@ int main()
 				{
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].hitbox[0].getGlobalBounds()))
 					{
-						iscollision[0]++;
+						iscollision++;
 						/*printf("%d", iscollision);*/
 						score += 10;
 						//UI
@@ -1074,8 +1076,9 @@ int main()
 						enemies1.erase(enemies1.begin() + j);
 						break;
 					}
-					if (iscollision[0] == 20)
+					if (iscollision == 20)
 					{
+						iscollision = 0;
 						Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7), CountTime);
 						Item1.push_back(Item(Itemshoot_Y));
 						
@@ -1091,7 +1094,7 @@ int main()
 				{
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].hitbox[0].getGlobalBounds()))
 					{
-						iscollision[1]++;
+						iscollision++;
 						score += 10;
 						//UI
 						textscore.setString("SCORE : " + to_string(score));
@@ -1100,13 +1103,11 @@ int main()
 						break;
 					}
 
-					if (iscollision[1] == 20)
+					if (iscollision == 20)
 					{
 						Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7), CountTime);
 						Item1.push_back(Item(Itemshoot_Y));
-						iscollision[1] = 0;
-
-
+						iscollision = 0;
 					}
 
 				}
@@ -1121,7 +1122,7 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].hitbox[1].getGlobalBounds()))
 					{
-						iscollision[2]++;
+						iscollision++;
 						enemies3[j].bloodenemymedium--;
 						if (enemies3[j].bloodenemymedium == 0)
 						{
@@ -1134,11 +1135,11 @@ int main()
 						break;
 					}
 
-					if (iscollision[2] == 10)
+					if (iscollision == 10)
 					{
 						Item Itemshoot_G(itemGreen, sf::Vector2i(1, 7), CountTime);
 						Item2.push_back(Item(Itemshoot_G));
-						iscollision[2] = 0;
+						iscollision = 0;
 					}
 				}
 
@@ -1151,7 +1152,7 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies4[j].hitbox[2].getGlobalBounds()))
 					{
-						iscollision[3]++;
+						iscollision++;
 						enemies4[j].bloodenemymedium--;
 						if (enemies4[j].bloodenemymedium == 0)
 						{
@@ -1165,11 +1166,11 @@ int main()
 						break;
 					}
 
-					if (iscollision[3] == 10)
+					if (iscollision == 10)
 					{
 						Item Itemshoot_R(itemRed, sf::Vector2i(1, 7), CountTime);
 						Item3.push_back(Item(Itemshoot_R));
-						iscollision[3] = 0;
+						iscollision = 0;
 					}
 				}
 
@@ -1182,7 +1183,7 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies5[j].Sprite_enemy1.getGlobalBounds()))
 					{
-						iscollision[4]++;
+						iscollision++;
 						enemies5[j].bloodenemybig--;
 						if (enemies5[j].bloodenemybig == 0)
 						{
@@ -1196,13 +1197,11 @@ int main()
 						break;
 					}
 
-					if (iscollision[4] == 5)
+					if (iscollision== 5)
 					{
 						Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7), CountTime);
 						Item1.push_back(Item(Itemshoot_Y));
-						iscollision[4] = 0;
-
-
+						iscollision = 0;
 					}
 				}
 
@@ -1215,7 +1214,7 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies6[j].hitbox[1].getGlobalBounds()))
 					{
-						iscollision[5]++;
+						iscollision++;
 						enemies6[j].bloodenemybig--;
 						if (enemies6[j].bloodenemybig == 0)
 						{
@@ -1229,13 +1228,11 @@ int main()
 						break;
 					}
 
-					if (iscollision[5] == 5)
+					if (iscollision == 5)
 					{
 						Item Itemshoot_G(itemGreen, sf::Vector2i(1, 7), CountTime);
 						Item1.push_back(Item(Itemshoot_G));
-						iscollision[5] = 0;
-
-
+						iscollision = 0;
 					}
 				}
 
@@ -1248,7 +1245,7 @@ int main()
 
 					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies7[j].hitbox[2].getGlobalBounds()))
 					{
-						iscollision[6]++;
+						iscollision++;
 						enemies7[j].bloodenemybigboss--;
 						if (enemies7[j].bloodenemybigboss == 0)
 						{
@@ -1261,13 +1258,11 @@ int main()
 						bullets.erase(bullets.begin() + i);
 						break;
 					}
-					if (iscollision[5] == 5)
+					if (iscollision == 5)
 					{
 						Item Itemshoot_R(itemRed, sf::Vector2i(1, 7), CountTime);
 						Item1.push_back(Item(Itemshoot_R));
-						iscollision[4] = 0;
-
-
+						iscollision = 0;
 					}
 				}
 
@@ -1278,7 +1273,7 @@ int main()
 			for (size_t i = 0; i < enemies1.size(); i++)
 			{
 				if (hitbox_player1.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds())
-					or hitbox_player2.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds()))
+					|| hitbox_player2.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds()))
 				{
 					enemies1.erase(enemies1.begin() + i);
 					blood -= 1;
@@ -1289,7 +1284,7 @@ int main()
 			for (size_t i = 0; i < enemies2.size(); i++)
 			{
 				if (hitbox_player1.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds())
-					or hitbox_player2.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds()))
+					|| hitbox_player2.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds()))
 				{
 					enemies2.erase(enemies2.begin() + i);
 					blood -= 1;
@@ -1300,7 +1295,7 @@ int main()
 			for (size_t i = 0; i < enemies3.size(); i++)
 			{
 				if (hitbox_player1.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds())
-					or hitbox_player2.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds()))
+					|| hitbox_player2.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds()))
 				{
 					enemies3.erase(enemies3.begin() + i);
 					blood -= 1;
@@ -1311,7 +1306,7 @@ int main()
 			for (size_t i = 0; i < enemies4.size(); i++)
 			{
 				if (hitbox_player1.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds())
-					or hitbox_player2.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds()))
+					|| hitbox_player2.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds()))
 				{
 					enemies4.erase(enemies4.begin() + i);
 					blood -= 1;
@@ -1322,7 +1317,7 @@ int main()
 			for (size_t i = 0; i < enemies5.size(); i++)
 			{
 				if (hitbox_player1.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds())
-					or hitbox_player2.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds()))
+					|| hitbox_player2.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds()))
 				{
 					enemies5.erase(enemies5.begin() + i);
 					blood -= 1;
@@ -1333,7 +1328,7 @@ int main()
 			for (size_t i = 0; i < enemies6.size(); i++)
 			{
 				if (hitbox_player1.getGlobalBounds().intersects(enemies6[i].hitbox[1].getGlobalBounds())
-					or hitbox_player2.getGlobalBounds().intersects(enemies6[i].hitbox[1].getGlobalBounds()))
+					|| hitbox_player2.getGlobalBounds().intersects(enemies6[i].hitbox[1].getGlobalBounds()))
 				{
 					enemies6.erase(enemies6.begin() + i);
 					blood -= 1;
@@ -1344,7 +1339,7 @@ int main()
 			for (size_t i = 0; i < enemies7.size(); i++)
 			{
 				if (hitbox_player1.getGlobalBounds().intersects(enemies7[i].hitbox[2].getGlobalBounds())
-					or hitbox_player2.getGlobalBounds().intersects(enemies7[i].hitbox[2].getGlobalBounds()))
+					|| hitbox_player2.getGlobalBounds().intersects(enemies7[i].hitbox[2].getGlobalBounds()))
 				{
 					enemies7.erase(enemies7.begin() + i);
 					blood -= 1;
@@ -1489,16 +1484,45 @@ int main()
 				if (hitbox_player1.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds())
 					|| hitbox_player2.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds()))
 				{
+					std::cout << "1" << std::endl;
 					player.BulletTime = CountTime;
 					itemplay = 1;
 					Item1.erase(Item1.begin() + i);
 					break;
 				}
 			}
+
+
+			for (size_t i = 0; i < Item2.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds())
+					|| hitbox_player2.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds()))
+				{
+					std::cout << "2" << std::endl;
+					player.BulletTime = CountTime;
+					itemplay = 2;
+					Item2.erase(Item2.begin() + i);
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < Item3.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds())
+					|| hitbox_player2.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds()))
+					{
+						std::cout << "3" << std::endl;
+						player.BulletTime = CountTime;
+						itemplay = 3;
+						Item3.erase(Item3.begin() + i);
+						break;
+					}
+			}
+
 			if (itemplay == 1)
 			{
-				if (firerate < 20) { firerate++; }
-				if (firerate >= 20)
+				if (firerate < 10) { firerate++; }
+				if (firerate >= 10)
 				{
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 					{
@@ -1511,25 +1535,11 @@ int main()
 
 					firerate = 0;
 				}
-			}
-
-
-			for (size_t i = 0; i < Item2.size(); i++)
+			} 
+			else if (itemplay == 2)
 			{
-				if (hitbox_player1.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds())
-					|| hitbox_player2.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds()))
-				{
-					player.BulletTime = CountTime;
-					itemplay = 2;
-					Item2.erase(Item2.begin() + i);
-					break;
-				}
-			}
-
-			if (itemplay == 2)
-			{
-				if (firerate < 20) { firerate++; }
-				if (firerate >= 20)
+				if (firerate < 10) { firerate++; }
+				if (firerate >= 10)
 				{
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 					{
@@ -1543,25 +1553,10 @@ int main()
 					firerate = 0;
 				}
 			}
-
-
-
-			for (size_t i = 0; i < Item3.size(); i++)
-			{
-				if (hitbox_player1.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds())
-					|| hitbox_player2.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds()))
-					{
-						player.BulletTime = CountTime;
-						itemplay = 3;
-						Item3.erase(Item3.begin() + i);
-						break;
-					}
-				}
-
-				if (itemplay == 3)
+			else if (itemplay == 3)
 				{
-					if (firerate < 20) { firerate++; }
-					if (firerate >= 20)
+					if (firerate < 10) { firerate++; }
+					if (firerate >= 10)
 					{
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 						{
