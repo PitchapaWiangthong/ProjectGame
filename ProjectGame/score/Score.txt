@@ -52,3 +52,6 @@ p 10
 d 0
 p 0
 Park 5420
+perth 90
+Perth 1530
+Perth 8680

@@ -48,7 +48,7 @@ int main()
 	int cnt = 0;
 	int blood = 6;
 	int counter = 0;
-	int iscollision = 0;
+	int iscollision[7] = {0,0,0,0,0,0,0};
 	int timeItem = 20;
 	bool flag[10];
 		for (size_t i = 0; i <= 9; i++)
@@ -287,7 +287,7 @@ int main()
 //story
 	sf::Text story;
 	story.setFont(font);
-	story.setString("Players in the role of a flying craft must fight against incoming enemy flying machines and in order not to be attacked, must only shoot, shoot and shoot.");
+	story.setString("Players in the role of a flying craft must fight against incoming enemy flying machines&&in order not to be attacked, must only shoot, shoot&&shoot.");
 	story.setFillColor(sf::Color::Yellow);
 	story.setOutlineColor(sf::Color::Blue);
 	story.setOutlineThickness(5);
@@ -616,7 +616,7 @@ int main()
 
 				
 			
-			if (event.type == sf::Event::TextEntered and debounce < clock2.getElapsedTime().asSeconds())
+			if (event.type == sf::Event::TextEntered&&debounce < clock2.getElapsedTime().asSeconds())
 			{
 
 				debounce = clock2.getElapsedTime().asSeconds() + 0.2;
@@ -679,7 +679,7 @@ int main()
 
 			if (bc.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(window))))
 			{
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and flag[1])
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)&&flag[1])
 				{
 					slide++;
 					flag[1] = false;
@@ -801,729 +801,755 @@ int main()
 			}
 
 
-				CountTime += deltatime;
-				/*cout << CountTime << endl;*/
-				
+			CountTime += deltatime;
+			/*cout << CountTime << endl;*/
 
-				//hitbox player
-				hitbox_player1.setPosition(player.Sprite_ship.getPosition().x + 15, player.Sprite_ship.getPosition().y + 35);
-				hitbox_player2.setPosition(player.Sprite_ship.getPosition().x + 10, player.Sprite_ship.getPosition().y + 63);
 
-				
+			//hitbox player
+			hitbox_player1.setPosition(player.Sprite_ship.getPosition().x + 15, player.Sprite_ship.getPosition().y + 35);
+			hitbox_player2.setPosition(player.Sprite_ship.getPosition().x + 10, player.Sprite_ship.getPosition().y + 63);
 
-				//Spacebar KeyPressed 
+
+
+			//Spacebar KeyPressed 
+			if (firerate < 20) { firerate++; }
+			if (firerate >= 20)
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{
+
+					Bulletblue.Sprite_bullet.setPosition
+					(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
+						player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
+					soundbullet.play();
+					bullets.push_back(Bullet(Bulletblue));
+
+				}
+
+				firerate = 0;
+
+			}
+
+			//bullets movement
+			for (int i = 0; i < bullets.size(); i++)
+			{
+				bullets[i].Sprite_bullet.move(deltatime * 500, 0);
+
+				if (bullets[i].Sprite_bullet.getPosition().x > window.getSize().x)
+				{
+					bullets.erase(bullets.begin() + i);
+					break;
+				}
+			}
+
+			//enemies movement
+			if (enemySpawnTimer < 50) { enemySpawnTimer++; }
+			if (enemySpawnTimer >= 50)
+			{
+				if (CountTime > 0&&CountTime <= 60||CountTime >= 140&&CountTime <= 160)
+				{
+					Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
+					enemies1.push_back(Enemy(Enemymini1));
+				}
+				if (CountTime >= 30&&CountTime <= 90||CountTime >= 150&&CountTime <= 170)
+				{
+					Enemymini2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini2.Sprite_enemy.getSize().y));
+					enemies2.push_back(Enemy(Enemymini2));
+				}
+
+				if (CountTime >= 60&&CountTime <= 120||CountTime >= 160&&CountTime <= 180)
+				{
+					Enemymedium1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium1.Sprite_enemy.getSize().y));
+					enemies3.push_back(Enemy(Enemymedium1));
+				}
+
+				if (CountTime >= 90&&CountTime <= 150||CountTime >= 200&&CountTime <= 250)
+				{
+					Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
+					enemies4.push_back(Enemy(Enemymedium2));
+				}
+				if (CountTime >= 165&&CountTime <= 225||CountTime >= 240&&CountTime <= 280)
+				{
+					/*cout << "de" << endl;*/
+					Enemybig1.Sprite_enemy1.setPosition(1000.f, rand() % 768);
+					enemies5.push_back(Enemy1(Enemybig1));
+				}
+				if (CountTime >= 200&&CountTime <= 250||CountTime >= 250&&CountTime <= 300)
+				{
+					Enemybig2.Sprite_enemy1.setPosition(1000.f, rand() % 768);
+					enemies6.push_back(Enemy1(Enemybig2));
+				}
+				if (CountTime >= 265&&CountTime <= 320)
+				{
+					Enemybigboss.Sprite_enemy1.setPosition(1000.f, rand() % 768);
+					enemies7.push_back(Enemy1(Enemybigboss));
+				}
+				if (CountTime > 350)
+				{
+					goto Gameover;
+
+				}
+				enemySpawnTimer = 0;
+			}
+
+			//Count time item
+
+			for (size_t i = 0; i < Item1.size(); i++)
+			{
+				if (Item1[i].lifetime < 0)
+					Item1.erase(Item1.begin() + i);
+				break;
+			}
+
+			for (size_t i = 0; i < Item2.size(); i++)
+			{
+				if (Item2[i].lifetime < 0)
+					Item2.erase(Item2.begin() + i);
+				break;
+			}
+
+			for (size_t i = 0; i < Item3.size(); i++)
+			{
+				if (Item3[i].lifetime < 0)
+					Item3.erase(Item3.begin() + i);
+				break;
+			}
+
+
+			//fruit item movement
+			if (itemSpawnTimer < 30) { itemSpawnTimer++; }
+			if (itemSpawnTimer >= 30)
+			{
+				if (CountTime >= 155&&CountTime <= 165||CountTime >= 320&&CountTime <= 340)
+				{
+					Fruititem1.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem1.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itembanana.push_back(DropItem(Fruititem1));
+					Fruititem2.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem2.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itemcherry.push_back(DropItem(Fruititem2));
+					Fruititem3.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem3.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itemgrape.push_back(DropItem(Fruititem3));
+					Fruititem4.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem4.Sprite_Itemfruit.getSize().x)), 0.f);
+					Itemwatermelon.push_back(DropItem(Fruititem4));
+				}
+
+				itemSpawnTimer = 0;
+			}
+
+			//erase fruit item
+			for (int i = 0; i < Itembanana.size(); i++)
+			{
+				Itembanana[i].Update(deltatime);
+				if (Itembanana[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itembanana.erase(Itembanana.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < Itemcherry.size(); i++)
+			{
+				Itemcherry[i].Update(deltatime);
+				if (Itemcherry[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itemcherry.erase(Itemcherry.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < Itemgrape.size(); i++)
+			{
+				Itemgrape[i].Update(deltatime);
+				if (Itemgrape[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itemgrape.erase(Itemgrape.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < Itemwatermelon.size(); i++)
+			{
+				Itemwatermelon[i].Update(deltatime);
+				if (Itemwatermelon[i].Sprite_Itemfruit.getPosition().y > 700)
+				{
+					Itemwatermelon.erase(Itemwatermelon.begin() + i);
+					break;
+				}
+
+			}
+
+			//erase enemies
+			for (int i = 0; i < enemies1.size(); i++)
+			{
+				enemies1[i].Update(deltatime, i);
+				if (enemies1[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies1.erase(enemies1.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < enemies2.size(); i++)
+			{
+				enemies2[i].Update(deltatime, i);
+				if (enemies2[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies2.erase(enemies2.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < enemies3.size(); i++)
+			{
+				enemies3[i].Update(deltatime, i);
+				if (enemies3[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies3.erase(enemies3.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < enemies4.size(); i++)
+			{
+				enemies4[i].Update(deltatime, i);
+				if (enemies4[i].Sprite_enemy.getPosition().x < -130)
+				{
+					enemies4.erase(enemies4.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < enemies5.size(); i++)
+			{
+				enemies5[i].Update(deltatime);
+				if (enemies5[i].Sprite_enemy1.getPosition().x < -130)
+				{
+					enemies5.erase(enemies5.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < enemies6.size(); i++)
+			{
+				enemies6[i].Update(deltatime);
+				if (enemies6[i].Sprite_enemy1.getPosition().x < -130)
+				{
+					enemies6.erase(enemies6.begin() + i);
+					break;
+				}
+
+			}
+
+			for (int i = 0; i < enemies7.size(); i++)
+			{
+				enemies7[i].Update(deltatime);
+				if (enemies7[i].Sprite_enemy1.getPosition().x < -130)
+				{
+					enemies7.erase(enemies7.begin() + i);
+					break;
+				}
+
+			}
+
+			//collistion bullets vs enemies
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies1.size(); j++)
+				{
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].hitbox[0].getGlobalBounds()))
+					{
+						iscollision[0]++;
+						/*printf("%d", iscollision);*/
+						score += 10;
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						enemies1.erase(enemies1.begin() + j);
+						break;
+					}
+					if (iscollision[0] == 20)
+					{
+						Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7), CountTime);
+						Item1.push_back(Item(Itemshoot_Y));
+						
+
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies2.size(); j++)
+				{
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].hitbox[0].getGlobalBounds()))
+					{
+						iscollision[1]++;
+						score += 10;
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						enemies2.erase(enemies2.begin() + j);
+						break;
+					}
+
+					if (iscollision[1] == 20)
+					{
+						Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7), CountTime);
+						Item1.push_back(Item(Itemshoot_Y));
+						iscollision[1] = 0;
+
+
+					}
+
+				}
+
+			}
+
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies3.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].hitbox[1].getGlobalBounds()))
+					{
+						iscollision[2]++;
+						enemies3[j].bloodenemymedium--;
+						if (enemies3[j].bloodenemymedium == 0)
+						{
+							score += 20;
+							enemies3.erase(enemies3.begin() + j);
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						break;
+					}
+
+					if (iscollision[2] == 10)
+					{
+						Item Itemshoot_G(itemGreen, sf::Vector2i(1, 7), CountTime);
+						Item2.push_back(Item(Itemshoot_G));
+						iscollision[2] = 0;
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies4.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies4[j].hitbox[2].getGlobalBounds()))
+					{
+						iscollision[3]++;
+						enemies4[j].bloodenemymedium--;
+						if (enemies4[j].bloodenemymedium == 0)
+						{
+							score += 20;
+							enemies4.erase(enemies4.begin() + j);
+
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						break;
+					}
+
+					if (iscollision[3] == 10)
+					{
+						Item Itemshoot_R(itemRed, sf::Vector2i(1, 7), CountTime);
+						Item3.push_back(Item(Itemshoot_R));
+						iscollision[3] = 0;
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies5.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies5[j].Sprite_enemy1.getGlobalBounds()))
+					{
+						iscollision[4]++;
+						enemies5[j].bloodenemybig--;
+						if (enemies5[j].bloodenemybig == 0)
+						{
+							score += 30;
+							enemies5.erase(enemies5.begin() + j);
+
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						break;
+					}
+
+					if (iscollision[4] == 5)
+					{
+						Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7), CountTime);
+						Item1.push_back(Item(Itemshoot_Y));
+						iscollision[4] = 0;
+
+
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies6.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies6[j].hitbox[1].getGlobalBounds()))
+					{
+						iscollision[5]++;
+						enemies6[j].bloodenemybig--;
+						if (enemies6[j].bloodenemybig == 0)
+						{
+							score += 50;
+							enemies6.erase(enemies6.begin() + j);
+
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						break;
+					}
+
+					if (iscollision[5] == 5)
+					{
+						Item Itemshoot_G(itemGreen, sf::Vector2i(1, 7), CountTime);
+						Item1.push_back(Item(Itemshoot_G));
+						iscollision[5] = 0;
+
+
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < enemies7.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies7[j].hitbox[2].getGlobalBounds()))
+					{
+						iscollision[6]++;
+						enemies7[j].bloodenemybigboss--;
+						if (enemies7[j].bloodenemybigboss == 0)
+						{
+							score += 100;
+							enemies7.erase(enemies7.begin() + j);
+
+						}
+						//UI
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						break;
+					}
+					if (iscollision[5] == 5)
+					{
+						Item Itemshoot_R(itemRed, sf::Vector2i(1, 7), CountTime);
+						Item1.push_back(Item(Itemshoot_R));
+						iscollision[4] = 0;
+
+
+					}
+				}
+
+			}
+
+
+			//collistion player vs enemy
+			for (size_t i = 0; i < enemies1.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds()))
+				{
+					enemies1.erase(enemies1.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < enemies2.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds()))
+				{
+					enemies2.erase(enemies2.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < enemies3.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds()))
+				{
+					enemies3.erase(enemies3.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < enemies4.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds()))
+				{
+					enemies4.erase(enemies4.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < enemies5.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds()))
+				{
+					enemies5.erase(enemies5.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < enemies6.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(enemies6[i].hitbox[1].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies6[i].hitbox[1].getGlobalBounds()))
+				{
+					enemies6.erase(enemies6.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < enemies7.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(enemies7[i].hitbox[2].getGlobalBounds())
+					or hitbox_player2.getGlobalBounds().intersects(enemies7[i].hitbox[2].getGlobalBounds()))
+				{
+					enemies7.erase(enemies7.begin() + i);
+					blood -= 1;
+					break;
+				}
+			}
+
+			//collistion bullet vs fruit item
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itembanana.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itembanana[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						Itembanana[j].n_b++;
+						//UI
+						score += (20 * (Itembanana[j].n_b));
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						Itembanana.erase(Itembanana.begin() + j);
+						break;
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itemgrape.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemgrape[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						Itemgrape[j].n_g++;
+						//UI
+						score += (30 * (Itemgrape[j].n_g));
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						Itemgrape.erase(Itemgrape.begin() + j);
+						break;
+					}
+				}
+
+			}
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itemcherry.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemcherry[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						Itemcherry[j].n_c++;
+						//UI
+						score += (50 * (Itemcherry[j].n_c));
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						Itemcherry.erase(Itemcherry.begin() + j);
+						break;
+					}
+				}
+
+			}
+
+
+			for (size_t i = 0; i < bullets.size(); i++)
+			{
+				for (size_t j = 0; j < Itemwatermelon.size(); j++)
+				{
+
+					if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemwatermelon[j].Sprite_Itemfruit.getGlobalBounds()))
+					{
+						Itemwatermelon[j].n_w++;
+						//UI
+						score += (100 * (Itemwatermelon[j].n_w));
+						textscore.setString("SCORE : " + to_string(score));
+						bullets.erase(bullets.begin() + i);
+						Itemwatermelon.erase(Itemwatermelon.begin() + j);
+						break;
+					}
+				}
+
+			}
+
+			//collistion player vs fruit item
+			for (size_t i = 0; i < Itembanana.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itembanana[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itembanana[i].n_b++;
+					//UI
+					score += (20 * (Itembanana[i].n_b));
+					textscore.setString("SCORE : " + to_string(score));
+					Itembanana.erase(Itembanana.begin() + i);
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < Itemgrape.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itemgrape[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itemgrape[i].n_g++;
+					//UI
+					score += (30 * (Itemgrape[i].n_g));
+					textscore.setString("SCORE : " + to_string(score));
+					Itemgrape.erase(Itemgrape.begin() + i);
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < Itemcherry.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itemcherry[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itemcherry[i].n_c++;
+					//UI
+					score += (50 * Itemcherry[i].n_c);
+					textscore.setString("SCORE : " + to_string(score));
+					Itemcherry.erase(Itemcherry.begin() + i);
+					break;
+				}
+			}
+
+			for (size_t i = 0; i < Itemwatermelon.size(); i++)
+			{
+				if (player.Sprite_ship.getGlobalBounds().intersects(Itemwatermelon[i].Sprite_Itemfruit.getGlobalBounds()))
+				{
+					Itemwatermelon[i].n_w++;
+					//UI
+					score += (100 * (Itemwatermelon[i].n_w));
+					textscore.setString("SCORE : " + to_string(score));
+					Itemwatermelon.erase(Itemwatermelon.begin() + i);
+					break;
+				}
+			}
+
+			//collistion player vs itemshoot
+			for (size_t i = 0; i < Item1.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds())
+					|| hitbox_player2.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds()))
+				{
+					player.BulletTime = CountTime;
+					itemplay = 1;
+					Item1.erase(Item1.begin() + i);
+					break;
+				}
+			}
+			if (itemplay == 1)
+			{
 				if (firerate < 20) { firerate++; }
 				if (firerate >= 20)
 				{
 					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 					{
-
-						Bulletblue.Sprite_bullet.setPosition
+						Bulletyellow.Sprite_bullet.setPosition
 						(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
 							player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
 						soundbullet.play();
-						bullets.push_back(Bullet(Bulletblue));
-		
+						bullets.push_back(Bullet(Bulletyellow));
 					}
 
 					firerate = 0;
-
 				}
+			}
 
-				//bullets movement
-				for (int i = 0; i < bullets.size(); i++)
+
+			for (size_t i = 0; i < Item2.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds())
+					|| hitbox_player2.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds()))
 				{
-					bullets[i].Sprite_bullet.move(deltatime * 500, 0);
-
-					if (bullets[i].Sprite_bullet.getPosition().x > window.getSize().x)
-					{
-						bullets.erase(bullets.begin() + i);
-						break;
-					}
-				}
-
-				//enemies movement
-				if (enemySpawnTimer < 50) { enemySpawnTimer++; }
-				if (enemySpawnTimer >= 50)
-				{
-					if(CountTime > 0 and CountTime <= 60 or CountTime >= 140 and CountTime <= 160)
-					{
-					Enemymini1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini1.Sprite_enemy.getSize().y));
-					enemies1.push_back(Enemy(Enemymini1));
-					}
-					if (CountTime >= 30 and CountTime <= 90 or CountTime >= 150 and CountTime <= 170)
-					{
-						Enemymini2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymini2.Sprite_enemy.getSize().y));
-						enemies2.push_back(Enemy(Enemymini2));
-					}
-
-					if (CountTime >= 60 and CountTime <= 120 or CountTime >= 160 and CountTime <= 180)
-					{
-						Enemymedium1.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium1.Sprite_enemy.getSize().y));
-						enemies3.push_back(Enemy(Enemymedium1));
-					}
-
-					if (CountTime >=  90 and CountTime <= 150 or CountTime >= 200 and CountTime <= 250)
-					{
-						Enemymedium2.Sprite_enemy.setPosition(window.getSize().x, rand() % int(window.getSize().y - Enemymedium2.Sprite_enemy.getSize().y));
-						enemies4.push_back(Enemy(Enemymedium2));
-					}
-					if (CountTime >= 165 and CountTime <= 225 or CountTime >= 240 and CountTime <= 280)
-					{
-						/*cout << "de" << endl;*/
-						Enemybig1.Sprite_enemy1.setPosition(1000.f, rand() % 768);
-						enemies5.push_back(Enemy1(Enemybig1));
-					}
-					if (CountTime >= 200 and CountTime <= 250 or CountTime >= 250 and CountTime <= 300)
-					{
-						Enemybig2.Sprite_enemy1.setPosition(1000.f, rand() % 768);
-						enemies6.push_back(Enemy1(Enemybig2));
-					}
-					if (CountTime >= 265 and CountTime <= 320)
-					{
-						Enemybigboss.Sprite_enemy1.setPosition(1000.f, rand() % 768);
-						enemies7.push_back(Enemy1(Enemybigboss));
-					}
-					if (CountTime > 350)
-					{
-						goto Gameover;
-					
-					}
-					enemySpawnTimer = 0;
-				}
-				
-				//Count time item
-			
-				for (size_t i = 0; i < Item1.size(); i++)
-				{
-					if(Item1[i].lifetime < 0)
-					Item1.erase(Item1.begin() + i);
+					player.BulletTime = CountTime;
+					itemplay = 2;
+					Item2.erase(Item2.begin() + i);
 					break;
 				}
+			}
 
-				for (size_t i = 0; i < Item2.size(); i++)
+			if (itemplay == 2)
+			{
+				if (firerate < 20) { firerate++; }
+				if (firerate >= 20)
 				{
-					if (Item2[i].lifetime < 0)
-						Item2.erase(Item2.begin() + i);
-					break;
-				}
-
-				for (size_t i = 0; i < Item3.size(); i++)
-				{
-					if (Item3[i].lifetime < 0)
-						Item3.erase(Item3.begin() + i);
-					break;
-				}
-
-			
-				//fruit item movement
-				if (itemSpawnTimer < 30) { itemSpawnTimer++; }
-				if (itemSpawnTimer >= 30)
-				{
-					if (CountTime >= 155 and CountTime <= 165 or CountTime >= 320 and CountTime <= 340)
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 					{
-						Fruititem1.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem1.Sprite_Itemfruit.getSize().x)), 0.f);
-						Itembanana.push_back(DropItem(Fruititem1));
-						Fruititem2.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem2.Sprite_Itemfruit.getSize().x)), 0.f);
-						Itemcherry.push_back(DropItem(Fruititem2));
-						Fruititem3.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem3.Sprite_Itemfruit.getSize().x)), 0.f);
-						Itemgrape.push_back(DropItem(Fruititem3));
-						Fruititem4.Sprite_Itemfruit.setPosition((rand() % int(window.getSize().x - Fruititem4.Sprite_Itemfruit.getSize().x)), 0.f);
-						Itemwatermelon.push_back(DropItem(Fruititem4));
+						Bulletgreen.Sprite_bullet.setPosition
+						(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
+							player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
+						soundbullet.play();
+						bullets.push_back(Bullet(Bulletgreen));
 					}
 
-					itemSpawnTimer = 0;
+					firerate = 0;
 				}
+			}
 
-				//erase fruit item
-				for (int i = 0; i < Itembanana.size(); i++)
-				{
-					Itembanana[i].Update(deltatime);
-					if (Itembanana[i].Sprite_Itemfruit.getPosition().y > 700)
-					{
-						Itembanana.erase(Itembanana.begin() + i);
-						break;
-					}
 
-				}
 
-				for (int i = 0; i < Itemcherry.size(); i++)
-				{
-					Itemcherry[i].Update(deltatime);
-					if (Itemcherry[i].Sprite_Itemfruit.getPosition().y > 700)
-					{
-						Itemcherry.erase(Itemcherry.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < Itemgrape.size(); i++)
-				{
-					Itemgrape[i].Update(deltatime);
-					if (Itemgrape[i].Sprite_Itemfruit.getPosition().y > 700)
-					{
-						Itemgrape.erase(Itemgrape.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < Itemwatermelon.size(); i++)
-				{
-					Itemwatermelon[i].Update(deltatime);
-					if (Itemwatermelon[i].Sprite_Itemfruit.getPosition().y > 700)
-					{
-						Itemwatermelon.erase(Itemwatermelon.begin() + i);
-						break;
-					}
-
-				}
-
-				//erase enemies
-				for (int i = 0; i < enemies1.size(); i++)
-				{
-					enemies1[i].Update(deltatime, i);
-					if (enemies1[i].Sprite_enemy.getPosition().x < -130)
-					{
-						enemies1.erase(enemies1.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < enemies2.size(); i++)
-				{
-					enemies2[i].Update(deltatime, i);
-					if (enemies2[i].Sprite_enemy.getPosition().x < -130)
-					{
-						enemies2.erase(enemies2.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < enemies3.size(); i++)
-				{
-					enemies3[i].Update(deltatime, i);
-					if (enemies3[i].Sprite_enemy.getPosition().x < -130)
-					{
-						enemies3.erase(enemies3.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < enemies4.size(); i++)
-				{
-					enemies4[i].Update(deltatime, i);
-					if (enemies4[i].Sprite_enemy.getPosition().x < -130)
-					{
-						enemies4.erase(enemies4.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < enemies5.size(); i++)
-				{
-					enemies5[i].Update(deltatime);
-					if (enemies5[i].Sprite_enemy1.getPosition().x < -130)
-					{
-						enemies5.erase(enemies5.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < enemies6.size(); i++)
-				{
-					enemies6[i].Update(deltatime);
-					if (enemies6[i].Sprite_enemy1.getPosition().x < -130)
-					{
-						enemies6.erase(enemies6.begin() + i);
-						break;
-					}
-
-				}
-
-				for (int i = 0; i < enemies7.size(); i++)
-				{
-					enemies7[i].Update(deltatime);
-					if (enemies7[i].Sprite_enemy1.getPosition().x < -130)
-					{
-						enemies7.erase(enemies7.begin() + i);
-						break;
-					}
-
-				}
-
-				//collistion bullets vs enemies
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < enemies1.size(); j++)
-					{
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies1[j].hitbox[0].getGlobalBounds()))
-						{
-							iscollision++;
-							/*printf("%d", iscollision);*/
-							score += 10;
-							//UI
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							enemies1.erase(enemies1.begin() + j);
-							break;
-						}
-						if (iscollision == 20)
-						{
-							Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7),CountTime);
-							Item1.push_back(Item(Itemshoot_Y));
-							iscollision = 0;
-
-						}
-					}
-
-				}
-				
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < enemies2.size(); j++)
-					{
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies2[j].hitbox[0].getGlobalBounds()))
-						{
-							iscollision++;
-							score += 10;
-							//UI
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							enemies2.erase(enemies2.begin() + j);
-							break;
-						}
-
-						if (iscollision == 20)
-						{
-							Item Itemshoot_Y(itemYellow, sf::Vector2i(1, 7), CountTime);
-							Item1.push_back(Item(Itemshoot_Y));
-							iscollision = 0;
-							
-
-						}
-
-					}
-
-				}
-
-
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < enemies3.size(); j++)
-					{
-						
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies3[j].hitbox[1].getGlobalBounds()))
-						{
-							iscollision++;
-							enemies3[j].bloodenemymedium--;
-							if (enemies3[j].bloodenemymedium == 0)
-							{
-								score += 20;
-								enemies3.erase(enemies3.begin() + j);
-							}
-							//UI
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							break;
-						}
-
-						if (iscollision == 10)
-						{
-							Item Itemshoot_G(itemGreen, sf::Vector2i(1, 7), CountTime);
-							Item2.push_back(Item(Itemshoot_G));
-							iscollision = 0;
-						}
-					}
-						
-				}
-				
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < enemies4.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies4[j].hitbox[2].getGlobalBounds()))
-						{
-							iscollision++;
-							enemies4[j].bloodenemymedium--;
-							if (enemies4[j].bloodenemymedium == 0)
-							{
-								score += 20;
-								enemies4.erase(enemies4.begin() + j);
-
-							}
-							//UI
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							break;
-						}
-					
-						if (iscollision == 10)
-						{
-							Item Itemshoot_R(itemRed, sf::Vector2i(1, 7), CountTime);
-							Item3.push_back(Item(Itemshoot_R));
-							iscollision = 0;
-						}
-					}
-
-				}
-
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < enemies5.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies5[j].Sprite_enemy1.getGlobalBounds()))
-						{
-							iscollision++;
-							enemies5[j].bloodenemybig--;
-							if (enemies5[j].bloodenemybig == 0)
-							{
-								score += 30;
-								enemies5.erase(enemies5.begin() + j);
-
-							}
-							//UI
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							break;
-						}
-					}
-
-				}
-
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < enemies6.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies6[j].hitbox[1].getGlobalBounds()))
-						{
-							iscollision++;
-							enemies6[j].bloodenemybig--;
-							if (enemies6[j].bloodenemybig == 0)
-							{
-								score += 50;
-								enemies6.erase(enemies6.begin() + j);
-
-							}
-							//UI
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							break;
-						}
-					}
-
-				}
-
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < enemies7.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(enemies7[j].hitbox[2].getGlobalBounds()))
-						{
-							iscollision++;
-							enemies7[j].bloodenemybigboss--;
-							if (enemies7[j].bloodenemybigboss == 0)
-							{
-								score += 100;
-								enemies7.erase(enemies7.begin() + j);
-
-							}
-							//UI
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							break;
-						}
-					}
-
-				}
-
-
-				//collistion player vs enemy
-				for (size_t i = 0; i < enemies1.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds()) 
-						or hitbox_player2.getGlobalBounds().intersects(enemies1[i].hitbox[0].getGlobalBounds()))
-					{
-						enemies1.erase(enemies1.begin() + i);
-						blood -= 1;
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < enemies2.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(enemies2[i].hitbox[0].getGlobalBounds()))
-					{
-						enemies2.erase(enemies2.begin() + i);
-						blood -= 1;
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < enemies3.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(enemies3[i].hitbox[1].getGlobalBounds()))
-					{
-						enemies3.erase(enemies3.begin() + i);
-						blood -= 1;
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < enemies4.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds()) 
-						or hitbox_player2.getGlobalBounds().intersects(enemies4[i].hitbox[2].getGlobalBounds()))
-					{
-						enemies4.erase(enemies4.begin() + i);
-						blood -= 1;
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < enemies5.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(enemies5[i].Sprite_enemy1.getGlobalBounds()))
-					{
-						enemies5.erase(enemies5.begin() + i);
-						blood -= 1;
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < enemies6.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(enemies6[i].hitbox[1].getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(enemies6[i].hitbox[1].getGlobalBounds()))
-					{
-						enemies6.erase(enemies6.begin() + i);
-						blood -= 1;
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < enemies7.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(enemies7[i].hitbox[2].getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(enemies7[i].hitbox[2].getGlobalBounds()))
-					{
-						enemies7.erase(enemies7.begin() + i);
-						blood -= 1;
-						break;
-					}
-				}
-
-				//collistion bullet vs fruit item
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < Itembanana.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itembanana[j].Sprite_Itemfruit.getGlobalBounds()))
-						{
-							Itembanana[j].n_b++;
-							//UI
-							score += (20 * (Itembanana[j].n_b));
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							Itembanana.erase(Itembanana.begin() + j);
-							break;
-						}
-					}
-
-				}
-
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < Itemgrape.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemgrape[j].Sprite_Itemfruit.getGlobalBounds()))
-						{
-							Itemgrape[j].n_g++;
-							//UI
-							score += (30*(Itemgrape[j].n_g));
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							Itemgrape.erase(Itemgrape.begin() + j);
-							break;
-						}
-					}
-
-				}
-
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < Itemcherry.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemcherry[j].Sprite_Itemfruit.getGlobalBounds()))
-						{
-							Itemcherry[j].n_c++;
-							//UI
-							score += (50*(Itemcherry[j].n_c));
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							Itemcherry.erase(Itemcherry.begin() + j);
-							break;
-						}
-					}
-
-				}
-
-
-				for (size_t i = 0; i < bullets.size(); i++)
-				{
-					for (size_t j = 0; j < Itemwatermelon.size(); j++)
-					{
-
-						if (bullets[i].Sprite_bullet.getGlobalBounds().intersects(Itemwatermelon[j].Sprite_Itemfruit.getGlobalBounds()))
-						{
-							Itemwatermelon[j].n_w++;
-							//UI
-							score += (100*(Itemwatermelon[j].n_w));
-							textscore.setString("SCORE : " + to_string(score));
-							bullets.erase(bullets.begin() + i);
-							Itemwatermelon.erase(Itemwatermelon.begin() + j);
-							break;
-						}
-					}
-
-				}
-
-				//collistion player vs fruit item
-				for (size_t i = 0; i < Itembanana.size(); i++)
-				{
-					if (player.Sprite_ship.getGlobalBounds().intersects(Itembanana[i].Sprite_Itemfruit.getGlobalBounds()))
-					{
-						Itembanana[i].n_b++;
-						//UI
-						score += (20*(Itembanana[i].n_b));
-						textscore.setString("SCORE : " + to_string(score));
-						Itembanana.erase(Itembanana.begin() + i);
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < Itemgrape.size(); i++)
-				{
-					if (player.Sprite_ship.getGlobalBounds().intersects(Itemgrape[i].Sprite_Itemfruit.getGlobalBounds()))
-					{
-						Itemgrape[i].n_g++;
-						//UI
-						score += (30*(Itemgrape[i].n_g));
-						textscore.setString("SCORE : " + to_string(score));
-						Itemgrape.erase(Itemgrape.begin() + i);
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < Itemcherry.size(); i++)
-				{
-					if (player.Sprite_ship.getGlobalBounds().intersects(Itemcherry[i].Sprite_Itemfruit.getGlobalBounds()))
-					{
-						Itemcherry[i].n_c++;
-						//UI
-						score += (50* Itemcherry[i].n_c);
-						textscore.setString("SCORE : " + to_string(score));
-						Itemcherry.erase(Itemcherry.begin() + i);
-						break;
-					}
-				}
-
-				for (size_t i = 0; i < Itemwatermelon.size(); i++)
-				{
-					if (player.Sprite_ship.getGlobalBounds().intersects(Itemwatermelon[i].Sprite_Itemfruit.getGlobalBounds()))
-					{
-						Itemwatermelon[i].n_w++;
-						//UI
-						score += (100*(Itemwatermelon[i].n_w));
-						textscore.setString("SCORE : " + to_string(score));
-						Itemwatermelon.erase(Itemwatermelon.begin() + i);
-						break;
-					}
-				}
-
-				//collistion player vs itemshoot
-				for (size_t i = 0; i < Item1.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(Item1[i].Sprite_item.getGlobalBounds()))
-					{
-						player.BulletTime = CountTime;
-						itemplay = 1;
-						Item1.erase(Item1.begin() + i);
-						break;
-					}
-				}
-				if (itemplay == 1)
-				{
-					if (firerate < 20) { firerate++; }
-					if (firerate >= 20)
-					{
-						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-						{
-							Bulletyellow.Sprite_bullet.setPosition
-							(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
-								player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
-							soundbullet.play();
-							bullets.push_back(Bullet(Bulletyellow));
-						}
-
-						firerate = 0;
-					}
-				}
-
-
-				for (size_t i = 0; i < Item2.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(Item2[i].Sprite_item.getGlobalBounds()))
-					{
-						player.BulletTime = CountTime;
-						itemplay = 2;
-						Item2.erase(Item2.begin() + i);
-						break;
-					}
-				}
-
-				if (itemplay == 2)
-				{
-					if (firerate < 20) { firerate++; }
-					if (firerate >= 20)
-					{
-						if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-						{
-							Bulletgreen.Sprite_bullet.setPosition
-							(player.Sprite_ship.getPosition().x + (player.Sprite_ship.getGlobalBounds().width) - 20,
-								player.Sprite_ship.getPosition().y + ((player.Sprite_ship.getGlobalBounds().height) / 2) + 20);
-							soundbullet.play();
-							bullets.push_back(Bullet(Bulletgreen));
-						}
-
-						firerate = 0;
-					}
-				}
-
-				
-
-				for (size_t i = 0; i < Item3.size(); i++)
-				{
-					if (hitbox_player1.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds())
-						or hitbox_player2.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds()))
+			for (size_t i = 0; i < Item3.size(); i++)
+			{
+				if (hitbox_player1.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds())
+					|| hitbox_player2.getGlobalBounds().intersects(Item3[i].Sprite_item.getGlobalBounds()))
 					{
 						player.BulletTime = CountTime;
 						itemplay = 3;
@@ -1567,7 +1593,7 @@ int main()
 
 
 				//hack
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::U) and debounce < clock3.getElapsedTime().asSeconds())
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)&&debounce < clock3.getElapsedTime().asSeconds())
 				{
 					debounce = clock3.getElapsedTime().asSeconds() + 5;
 					blood = 100;
